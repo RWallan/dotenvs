@@ -1,3 +1,2 @@
-eval "$(oh-my-posh init bash --config ~/.poshthemes/jandedobbeleer.omp.json)"
 eval "$(pyenv init -)"
 eval "$(fzf --bash)"

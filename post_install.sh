@@ -46,6 +46,9 @@ echo "Configurando Poetry"
 poetry config virtualenvs.prompt "{project_name"
 poetry config virtualenvs.in-project true
 
+echo "Melhorias do terminal"
+yay -S eza bat fzf oh-my-posh
+
 echo "Outras coisas"
 yay -S --noconfirm marktext-bin libreoffice-fresh libreoffice-fresh-pt-br telegram-desktop barrier unzip
 

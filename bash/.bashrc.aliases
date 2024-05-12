@@ -1,0 +1,7 @@
+alias pshell="poetry shell"
+alias lg="lazygit"
+alias activate="source .venv/bin/activate"
+alias ls="eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions --oneline"
+alias tree="eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions --tree --git-ignore --ignore-glob=__pycache__/*"
+alias d="deactivate"
+alias cat="bat"

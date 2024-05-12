@@ -1,0 +1,34 @@
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+    export|unset) fzf --preview "eval 'echo \$' {}" ;;
+    ssh)          fzf --preview 'dig {}' ;;
+    *)            fzf --preview "--preview 'bat -n --color=always --line-range :500 {}'" "$@" ;;
+  esac
+}
+
+poetry() {
+  if [[ $@ == "shell" ]]; then
+    if ([[ -f "$(poetry env info -p)/bin/activate" ]] && [[ -z "${VIRTUAL_ENV:-}" ]]); then
+      command source $(poetry env info -p)/bin/activate
+    else
+      command poetry "$@"
+    fi
+  else
+    command poetry "$@"
+  fi
+}
+
+activate_venv() {
+  # Verifica se existe pyproject.toml no diretório atual
+  if [[ -f "pyproject.toml" ]]; then
+    if ([[ -z "${VIRTUAL_ENV:-}" ]]); then
+      poetry shell
+    elif [[ -f "$(poetry env info -p)/bin/activate" ]]; then
+      command source $(poetry env info -p)/bin/activate
+    fi
+  fi
+}

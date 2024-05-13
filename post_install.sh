@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
 echo "Pacotes básicos"
-sudo pacman -S --noconfirm neovim git neofetch
+sudo pacman -S --noconfirm neovim git fastfetch
 
 echo "Melhorando o pacman"
 sudo nvim -c '%s/#Color/Color/g' -c '%s/#ParallelDownloads = 5/ParallelDownloads = 10/g' -c 'wq' /etc/pacman.conf
@@ -33,9 +32,9 @@ makepkg -si
 yay -Y --gendb
 
 echo "Programming"
-yay -S --noconfirm tmux beekeeper-studio-bin docker act github-cli
+yay -S --noconfirm tmux beekeeper-studio-bin docker act github-cli ripgrep
 yay -S --noconfirm pyenv tk pipx
-yay -S node npm
+yay -S --noconfirm node npm
 
 echo "Python"
 yay -S --noconfirm python-pipx
@@ -43,7 +42,7 @@ pyenv install 3.10:latest 3.11:latest 3.12:latest
 pipx install poetry
 
 echo "Configurando Poetry"
-poetry config virtualenvs.prompt "{project_name"
+poetry config virtualenvs.prompt "{project_name}"
 poetry config virtualenvs.in-project true
 
 echo "Melhorias do terminal"

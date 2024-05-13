@@ -1,4 +1,4 @@
-xterm*faceName: CaskaydiaMono Nerd Font
+! # xterm*faceName: CaskaydiaMono Nerd Font
 xterm*faceSize: 14
 xterm*Background: #1e1e2e
 xterm*Foreground: #f5c2e7

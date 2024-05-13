@@ -30,7 +30,7 @@ set $crust     #11111b
 set $mod Mod4
 
 # Fonte
-font pango:CaskaydiaMono Nerd Font 8
+font pango:Noto Sans Regular 8
 
 # Run pulseaudio
 exec pulseaudio --start
@@ -170,18 +170,18 @@ bar {
         status_command i3status
         status_command i3blocks
         position top
-      tray_padding 0
-	      strip_workspace_numbers yes
-	      colors {
-	          background         $base
-	          statusline         $text
-	          focused_statusline $text
-	          active_workspace   $base $text $blue
-	          focused_separator  $base
-	          focused_workspace  $base $base $green
-	          active_workspace   $base $base $blue
-	          inactive_workspace $base $base $surface1
-	          urgent_workspace   $base $base $surface1
-	          binding_mode       $base $base $surface1
-	  }
+        tray_padding 0
+        strip_workspace_numbers yes
+        colors {
+          background         $base
+          statusline         $text
+          focused_statusline $text
+          active_workspace   $base $text $blue
+          focused_separator  $base
+          focused_workspace  $base $base $green
+          active_workspace   $base $base $blue
+          inactive_workspace $base $base $surface1
+          urgent_workspace   $base $base $surface1
+          binding_mode       $base $base $surface1
+        }
 }

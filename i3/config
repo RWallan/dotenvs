@@ -30,7 +30,16 @@ set $crust     #11111b
 set $mod Mod4
 
 # Fonte
-font pango:Noto Sans Regular 8
+font pango:CaskaydiaMono Nerd Font 8
+
+# Run pulseaudio
+exec pulseaudio --start
+
+# Run xterm config
+exec xrdb -load ~/.Xresources
+
+# Run tmux config
+exec tmux source ~/.config/tmux/.tmux.conf
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -161,7 +170,7 @@ bar {
         status_command i3status
         status_command i3blocks
         position top
-	      tray_padding 0
+      tray_padding 0
 	      strip_workspace_numbers yes
 	      colors {
 	          background         $base

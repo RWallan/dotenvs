@@ -31,6 +31,18 @@ cd yay
 makepkg -si
 yay -Y --gendb
 
+echo "Instalando demais dependências"
+yay -S --noconfirm sysstat xfce4-terminal lxappearence nitrogen lxqt-policykit xfce4-power-manager imagemagick ttf-font-awesome awesome-terminal-fonts xdotool volumeicon notify-osd pavucontrol which ranger w3m rofi picom nautilus
+
+echo "Configurando ranger, comptom, picom"
+mkdir ~/.config/ranger
+echo "set preview_images true" > ~/.config/ranger/rc.conf
+
+cp -v ~/git/dotenvs/comptom.conf ~/.config/
+cp -v ~/git/dotenvs/picom.conf ~/.config/
+
+fc-cache -fv
+
 echo "Programming"
 yay -S --noconfirm tmux beekeeper-studio-bin docker act github-cli ripgrep
 yay -S --noconfirm pyenv tk pipx

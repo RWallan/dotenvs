@@ -1,7 +1,12 @@
 #
 # ~/.bashrc
 #
-neofetch
+
+if [ -x "$(command -v tmux)" ] && [ -n "${DISPLAY}" ] && [ -z "${TMUX}" ]; then
+    exec tmux new-session -A -s ${USER} >/dev/null 2>&1
+fi
+
+fastfetch
 
 setxkbmap -model abnt-2 -layout br
 
@@ -31,6 +36,3 @@ if [ -e ~/.bashrc.functions ] ; then
     source ~/.bashrc.functions
 fi
 
-if [ -x "$(command -v tmux)" ] && [ -n "${DISPLAY}" ] && [ -z "${TMUX}" ]; then
-    exec tmux new-session -A -s ${USER} >/dev/null 2>&1
-fi

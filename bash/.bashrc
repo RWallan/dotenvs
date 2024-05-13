@@ -35,4 +35,3 @@ fi
 if [ -e ~/.bashrc.functions ] ; then
     source ~/.bashrc.functions
 fi
-

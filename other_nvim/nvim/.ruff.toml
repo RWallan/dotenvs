@@ -1,8 +1,7 @@
 line-length = 79
 
 [lint]
-preview = true
-select = ['E']
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
 ignore = ['E402', 'F811']
 
 [lint.per-file-ignores]
@@ -10,6 +9,5 @@ ignore = ['E402', 'F811']
 "**/{tests,docs,tools}/*" = ["E402"]
 
 [format]
-preview = true
 quote-style = 'single'
 indent-style = 'space'

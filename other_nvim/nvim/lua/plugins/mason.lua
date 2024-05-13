@@ -37,6 +37,7 @@ return {
 				"tsserver",
 				"lua_ls",
 				"marksman",
+                "ruff_lsp",
 				"sqls",
 				"taplo",
 				"yamlls",
@@ -47,7 +48,6 @@ return {
 			ensure_installed = {
 				"prettier", -- prettier formatter
 				"stylua", -- lua formatter
-				"ruff",
                 "sqlfluff",
 			},
 		})

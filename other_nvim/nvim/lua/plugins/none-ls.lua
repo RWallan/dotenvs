@@ -6,7 +6,6 @@ return {
         null_ls.setup({
             sources = {
                 -- LINTERS --
-                require("none-ls.diagnostics.ruff"),
 
                 -- FORMATTERS --
                 null_ls.builtins.formatting.prettier, -- HTML
@@ -14,7 +13,7 @@ return {
             },
         })
 
-        vim.keymap.set("n", "<leader>gf", vim.lsp.buf.format, {})
+        vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, {})
     end,
 }
 

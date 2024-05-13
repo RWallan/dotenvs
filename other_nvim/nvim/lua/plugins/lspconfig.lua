@@ -1,39 +1,4 @@
 return {
-    {
-        "williamboman/mason.nvim",
-        config = function()
-            require("mason").setup({
-                ensure_installed = {
-                }
-            })
-        end
-    },
-    {
-        "williamboman/mason-lspconfig.nvim",
-        config = function()
-            require("mason-lspconfig").setup({
-                ensure_installed = {
-                    "jsonls", -- JSON
-                    "remark_ls", -- MARKDOWN
-                    "sqls", -- SQL
-                    "tsserver" -- JAVASCRIPT
-                }
-            })
-        end
-    },
-    {
-        "jay-babu/mason-null-ls.nvim",
-        config = function()
-            require("mason-null-ls").setup({
-                ensure_installed = {
-                    "stylua", -- LUA
-                    "eslint_d", -- JS
-                    "prettier", -- HTML
-                }
-            })
-        end
-    },
-    {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile"},
     dependencies = {
@@ -54,7 +19,7 @@ return {
                 local opts = { buffer = ev.buf, silent = true}
                 -- set keybinds
                 opts.desc = "Show LSP references"
-                keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
+                keymap.set("n", "lR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
 
                 opts.desc = "Go to declaration"
                 keymap.set("n", "lD", vim.lsp.buf.declaration, opts) -- go to declaration
@@ -97,6 +62,12 @@ return {
         -- Change the Diagnostic symbols in the sign column (gutter)
         -- (not in youtube nvim video)
         local capabilities = cmp_nvim_lsp.default_capabilities()
+        local signs = { Error = " ", Warn = " ", Hint = "� ", Info = " " }
+        for type, icon in pairs(signs) do
+          local hl = "DiagnosticSign" .. type
+          vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+        end
+
         mason_lspconfig.setup_handlers({
             function(server_name)
                 lspconfig[server_name].setup({
@@ -122,6 +93,4 @@ return {
             end,
         })
     end
-    }
 }
-

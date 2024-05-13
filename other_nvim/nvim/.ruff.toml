@@ -1,0 +1,15 @@
+line-length = 79
+
+[lint]
+preview = true
+select = ['E']
+ignore = ['E402', 'F811']
+
+[lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402"]
+
+[format]
+preview = true
+quote-style = 'single'
+indent-style = 'space'

@@ -208,7 +208,7 @@ bindsym $mod+m workspace next_on_output
 bindsym $mod+n workspace prev_on_output
 
 # ATALHOS
-bindsym $mod+g exec --no-startup-id firefox
+bindsym $mod+g exec --no-startup-id brave
 bindsym $mod+p exec ~/.config/i3/scripts/power1.sh
 #bindsym $mod+Shift+q exec i3lock -c "#000000" -i ~/Pictures/wall.png
 #bindsym $mod+Shift+q exec dm-tool lock

@@ -6,7 +6,7 @@ return {
         null_ls.setup({
             sources = {
                 -- LINTERS --
-                null_ls.builtins.diagnostics.mypy,
+                require("none-ls.diagnostics.ruff"),
 
                 -- FORMATTERS --
                 null_ls.builtins.formatting.prettier, -- HTML

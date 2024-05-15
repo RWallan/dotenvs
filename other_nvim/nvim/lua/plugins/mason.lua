@@ -34,6 +34,7 @@ return {
 				"eslint",
 				"html",
 				"jsonls",
+                "pyright",
 				"tsserver",
 				"lua_ls",
 				"marksman",
@@ -45,7 +46,6 @@ return {
 
 		mason_tool_installer.setup({
 			ensure_installed = {
-                "mypy",
 				"prettier", -- prettier formatter
                 "ruff",
 				"stylua", -- lua formatter

@@ -6,12 +6,13 @@ return {
         null_ls.setup({
             sources = {
                 -- LINTERS --
-                require("none-ls.diagnostics.ruff"),
+                require("none-ls.diagnostics.ruff"), -- PYTHON
+                require("none-ls.diagnostics.eslint_d"),
 
                 -- FORMATTERS --
                 null_ls.builtins.formatting.prettier, -- HTML
                 null_ls.builtins.formatting.stylua, -- LUA
-                require("none-ls.formatting.ruff"),
+                require("none-ls.formatting.ruff"), -- PYTHON
             },
         })
 

@@ -15,9 +15,10 @@ return {
                 e = { name = "Explorer" },
                 b = { name = "Buffer" },
                 l = { name = "LSP" },
-                s = { name = "Split"},
-                g = { name = "Git"},
-                n = { name = "Normal Mode Utils"}
+                s = { name = "Split" },
+                g = { name = "Git" },
+                n = { name = "Other" },
+                x = { name = "Trouble" }
             },
         })
     end,

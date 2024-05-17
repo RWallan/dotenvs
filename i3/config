@@ -186,7 +186,7 @@ bindsym $mod+r mode "resize"
 # GAPS E COMPORTAMENTO DE JANELAS
 for_window [class="^.*"] border pixel 2
 gaps inner 4
-gaps outer 2
+gaps outer 5
 focus_follows_mouse no
 hide_edge_borders both
 #smart_gaps on
@@ -240,7 +240,7 @@ set $color8 "#FFFFFF"
 
 # TEMA
 # class                 border  bground text    indicator child_border
-# client.focused          $foreground $foreground $color6 $foreground $foreground
+client.focused          $pink $base $pink $pink $pink
 # client.focused_inactive $color1 $color1 $background $color1 $color1
 # client.unfocused        $color2 $color2 $color3 $color2 $color2
 # client.urgent           $color1 $color4 $background $color4 $color4
@@ -260,9 +260,9 @@ bar {
 	colors {
     		background         $base
     		statusline         $text
-		focused_statusline $text
-		focused_separator  $base
-    		focused_workspace  $base $base $blue
+            focused_statusline $text
+            focused_separator  $base
+    		focused_workspace  $base $base $pink
     		active_workspace   $base $base $blue
     		inactive_workspace $base $base $surface1
     		urgent_workspace   $base $base $surface1

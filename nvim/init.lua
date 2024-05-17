@@ -1,8 +1,5 @@
--- ########## CONFIGURAÇÕES CORE DO NEOVIM ##########
-
--- Instala o LazyNvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
@@ -14,6 +11,14 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Importando módulos de configuração
-require("options") -- Importa as configurações relacionadas ao cmd do neovim
-require("lazy").setup("plugins") -- Importa os plugins e suas configurações
+require("options")
+require("keymaps")
+require("lazy").setup("plugins", {
+  checker = {
+    enabled = true,
+    notify = false,
+  },
+  change_detection = {
+    notify = false,
+  },
+})

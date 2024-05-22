@@ -18,7 +18,8 @@ return {
                 s = { name = "Split" },
                 g = { name = "Git" },
                 n = { name = "Other" },
-                x = { name = "Trouble" }
+                x = { name = "Trouble" },
+                v = { name = "Virtual Env" }
             },
         })
     end,

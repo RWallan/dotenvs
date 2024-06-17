@@ -19,7 +19,10 @@ return {
                 g = { name = "Git" },
                 n = { name = "Other" },
                 x = { name = "Trouble" },
-                v = { name = "Virtual Env" }
+                v = { name = "Virtual Env" },
+                r = { name = "Resize" },
+                w = { name = "Session" },
+                t = { name = "REPL"},
             },
         })
     end,

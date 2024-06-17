@@ -39,6 +39,7 @@ return {
 				"pyright", -- python
 				"sqlls", -- sql
 				"taplo", -- toml
+                "volar", -- vue
 				"yamlls", -- yaml
 			},
 		})
@@ -49,6 +50,8 @@ return {
 				"prettier", -- html/js
 				"ruff_lsp", -- python
 				"stylua", -- lua
+                "sql-formatter", -- SQL Formatter
+                "sqlfluff" -- SQL Linter
 			},
 		})
 	end,

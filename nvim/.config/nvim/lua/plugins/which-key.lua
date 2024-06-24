@@ -22,7 +22,8 @@ return {
                 v = { name = "Virtual Env" },
                 r = { name = "Resize" },
                 w = { name = "Session" },
-                t = { name = "REPL"},
+                t = { name = "REPL" },
+                m = { name = "Markdown" },
             },
         })
     end,

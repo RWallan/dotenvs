@@ -72,6 +72,9 @@ bindsym $mod+Shift+q kill
 bindsym $mod+d exec dmenu_run
 # bindsym $mod+s exec --no-startup-id nautilus -w
 
+# start browser
+bindsym $mod+b exec qutebrowser
+
 # change focus
 bindsym $mod+h focus left
 bindsym $mod+j focus down

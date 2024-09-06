@@ -41,6 +41,7 @@ return {
 				"taplo", -- toml
                 "volar", -- vue
 				"yamlls", -- yaml
+                "gopls", -- golang
 			},
 		})
 
@@ -51,7 +52,9 @@ return {
 				"ruff_lsp", -- python
 				"stylua", -- lua
                 "sql-formatter", -- SQL Formatter
-                "sqlfluff" -- SQL Linter
+                "sqlfluff", -- SQL Linter
+                "golangci-lint",
+                "gomodifytags",
 			},
 		})
 	end,

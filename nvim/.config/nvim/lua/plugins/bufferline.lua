@@ -26,6 +26,7 @@ return {
 			keymap.set("n", "<leader>bl", "<cmd>BufferLineCloseRight<CR>", { desc = "Close all buffers to right" })
 			keymap.set("n", "<leader>bh", "<cmd>BufferLineCloseLeft<CR>", { desc = "Close all buffers to left" })
 			keymap.set("n", "<leader>bC", "<cmd>BufferLineCloseOther<CR>", { desc = "Close all other buffers" })
+			keymap.set("n", "<leader>ba", "<cmd>%bd<CR>", { desc = "Close all buffers" })
 		end,
 	},
 }

@@ -39,9 +39,11 @@ return {
 				"pyright", -- python
 				"sqlls", -- sql
 				"taplo", -- toml
+                "tailwindcss", -- tailwindcss
                 "volar", -- vue
 				"yamlls", -- yaml
                 "gopls", -- golang
+                "svelte", -- svelte
 			},
 		})
 

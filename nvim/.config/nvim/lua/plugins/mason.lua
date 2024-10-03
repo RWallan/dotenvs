@@ -33,7 +33,7 @@ return {
 				"docker_compose_language_service", -- docker compose
 				"html", -- html
 				"jsonls", -- json
-				"tsserver", -- javascript
+				"ts_ls", -- javascript
 				"lua_ls", -- lua
 				"marksman", -- markdown
 				"pyright", -- python

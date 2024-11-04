@@ -20,7 +20,7 @@ return {
             },
         })
         local keymap = vim.keymap
-        keymap.set("n", "<leader>ee", "<cmd>Neotree toggle<CR>", { desc = "Toggle File Explorer" })
+        keymap.set("n", "<leader>eq", "<cmd>Neotree toggle<CR>", { desc = "Toggle Quick File Explorer" })
         keymap.set("n", "<leader>eb", "<cmd>Neotree buffers toggle<CR>", { desc = "Toggle Buffer Explorer" })
     end
 }

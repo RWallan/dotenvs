@@ -1,8 +1,14 @@
 return {
-	{
-		"lewis6991/gitsigns.nvim",
+	{"lewis6991/gitsigns.nvim",
 		event = { "BufReadPre", "BufNewFile" },
 		opts = {
+			signs = {
+				add = { text = "+" },
+				change = { text = "~" },
+				delete = { text = "_" },
+				topdelete = { text = "‾" },
+				changedelete = { text = "~" },
+			},
 			on_attach = function(bufnr)
 				local gs = package.loaded.gitsigns
 
@@ -64,9 +70,5 @@ return {
 		keys = {
 			{ "<leader>gg", "<cmd>LazyGit<cr>", desc = "Open lazy git" },
 		},
-	},
-	{
-		"tpope/vim-fugitive",
-		event = { "BufReadPre", "BufNewFile" },
 	},
 }

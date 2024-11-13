@@ -25,7 +25,7 @@ return {
 		-- set menu
 		dashboard.section.buttons.val = {
 			dashboard.button("e", "  > New File", "<cmd>enew<CR>"),
-			dashboard.button("SPC ee", "  > Toggle yazi explorer", "<cmd>Yazi cwd<cr>"),
+			dashboard.button("SPC ee", "  > Toggle file explorer", "<cmd>Neotree toggle<cr>"),
 			dashboard.button("SPC ff", "�  > Find File", "<cmd>Telescope find_files<CR>"),
 			dashboard.button("SPC fg", "  > Find Word", "<cmd>Telescope live_grep<CR>"),
 			dashboard.button("SPC wr", "󰁯  > Restore Session For Current Directory", "<cmd>SessionRestore<CR>"),

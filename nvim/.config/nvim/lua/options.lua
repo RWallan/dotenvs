@@ -1,38 +1,63 @@
-vim.cmd("let g:netrw_liststyle = 3")
+--- Map leader
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
-local opt = vim.opt
+--- Nerd font
+vim.g.have_nerd_font = true
 
-opt.relativenumber = true
-opt.number = true
+--- Line numbers
+vim.opt.number = true
+vim.opt.relativenumber = true
 
--- tabs & indentation
-opt.tabstop = 4 -- 4 spaces for tabs (prettier default)
-opt.shiftwidth = 4 -- 4 spaces for indent width
-opt.expandtab = true -- expand tab to spaces
-opt.autoindent = true -- copy indent from current line when starting new one
+--- Enabling mouse to resizing
+vim.opt.mouse = "a"
 
-opt.wrap = false
+--- Hiding the mode
+vim.opt.showmode = false
 
--- search settings
-opt.ignorecase = true -- ignore case when searching
-opt.smartcase = true -- if you include mixed case in your search, assumes you want case-sensitive
+--- Sync clipboard between OS and Neovim
+vim.schedule(
+    function()
+        vim.opt.clipboard = 'unnamedplus'
+    end
+)
 
-opt.cursorline = true
+--- Enable break indent
+vim.opt.breakindent = true
 
--- turn on termguicolors
-opt.termguicolors = true
-opt.background = "dark" -- colorschemes that can be light or dark will be made dark
-opt.signcolumn = "yes" -- show sign column so that text doesn't shift
+--- Save undo history
+vim.opt.undofile = true
 
--- backspace
-opt.backspace = "indent,eol,start" -- allow backspace on indent, end of line or insert mode start position
+--- Case-insensitive seach \C or one or more capital letters in the search term
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
--- clipboard
-opt.clipboard:append("unnamedplus") -- use system clipboard as default register
+--- Keep signcolumn on by default
+vim.opt.signcolumn = 'yes'
 
--- split windows
-opt.splitright = true -- split vertical window to the right
-opt.splitbelow = true -- split horizontal window to the bottom
+--- Decrease update time
+vim.opt.updatetime = 250
 
--- turn off swapfile
-opt.swapfile = false
+--- Decrease mapped sequence wait time
+--- Displays which-key popup sooner
+vim.opt.timeoutlen = 300
+
+--- Configure how new splits should be opened
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+
+--- Sets how neovim will display certain whitespace characters in the editor
+vim.opt.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+
+--- Preview substitutions live
+vim.opt.inccommand = 'split'
+
+--- Highlight selected line
+vim.opt.cursorline = true
+
+--- Minimal number of screen lines to keep above and below the cursor
+vim.opt.scrolloff = 10
+
+--- Tab as spaces
+vim.opt.expandtab = true

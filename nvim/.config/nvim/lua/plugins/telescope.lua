@@ -1,51 +1,73 @@
-return {
-  "nvim-telescope/telescope.nvim",
-  branch = "0.1.x",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-    "nvim-tree/nvim-web-devicons",
-    "folke/todo-comments.nvim",
-  },
-  config = function()
-    local telescope = require("telescope")
-    local actions = require("telescope.actions")
-    local transform_mod = require("telescope.actions.mt").transform_mod
+return { -- Fuzzy Finder (files, lsp, etc)
+	"nvim-telescope/telescope.nvim",
+	event = "VimEnter",
+	branch = "0.1.x",
+	cmd = { "Telescope" },
+	dependencies = {
+		"nvim-lua/plenary.nvim",
+		{ -- If encountering errors, see telescope-fzf-native README for installation instructions
+			"nvim-telescope/telescope-fzf-native.nvim",
 
-    local trouble = require("trouble")
-    local trouble_telescope = require("trouble.sources.telescope")
+			-- `build` is used to run some command when the plugin is installed/updated.
+			-- This is only run then, not every time Neovim starts up.
+			build = "make",
 
-    -- or create your custom action
-    local custom_actions = transform_mod({
-      open_trouble_qflist = function(prompt_bufnr)
-        trouble.toggle("quickfix")
-      end,
-    })
+			-- `cond` is a condition used to determine whether this plugin should be
+			-- installed and loaded.
+			cond = function()
+				return vim.fn.executable("make") == 1
+			end,
+		},
+		{ "nvim-telescope/telescope-ui-select.nvim" },
+		{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
+	},
+	config = function()
+		require("telescope").setup({
+			extensions = {
+				["ui-select"] = {
+					require("telescope.themes").get_dropdown(),
+				},
+			},
+		})
 
-    telescope.setup({
-      defaults = {
-        path_display = { "smart" },
-        mappings = {
-          i = {
-            ["<C-k>"] = actions.move_selection_previous, -- move to prev result
-            ["<C-j>"] = actions.move_selection_next, -- move to next result
-            ["<C-q>"] = actions.send_selected_to_qflist + custom_actions.open_trouble_qflist,
-            -- ["<C-t>"] = trouble_telescope.open(),
-          },
-        },
-      },
-    })
+		-- Enable Telescope extensions if they are installed
+		pcall(require("telescope").load_extension, "fzf")
+		pcall(require("telescope").load_extension, "ui-select")
 
-    telescope.load_extension("fzf")
+		-- See `:help telescope.builtin`
+		local builtin = require("telescope.builtin")
+		vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Find help" })
+		vim.keymap.set("n", "<leader>fk", builtin.keymaps, { desc = "Find keymaps" })
+		vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
+		vim.keymap.set("n", "<leader>fs", builtin.builtin, { desc = "Find select telescope" })
+		vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "Find current word" })
+		vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Find by grep" })
+		vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "Find diagnostics" })
+		vim.keymap.set("n", "<leader>fr", builtin.resume, { desc = "Find resume" })
+		vim.keymap.set("n", "<leader>f.", builtin.oldfiles, { desc = 'Find recent files ("." for repeat)' })
+		vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find existing buffers" })
 
-    -- set keymaps
-    local keymap = vim.keymap -- for conciseness
+		-- Slightly advanced example of overriding default behavior and theme
+		vim.keymap.set("n", "/", function()
+			-- You can pass additional configuration to Telescope to change the theme, layout, etc.
+			builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+				winblend = 10,
+				previewer = false,
+			}))
+		end, { desc = "[/] Fuzzily search in current buffer" })
 
-    keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" })
-    keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy find recent files" })
-    keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
-    keymap.set("n", "<leader>fw", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
-    keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
-    keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
-  end,
+		-- It's also possible to pass additional configuration options.
+		--  See `:help telescope.builtin.live_grep()` for information about particular keys
+		vim.keymap.set("n", "<leader>f/", function()
+			builtin.live_grep({
+				grep_open_files = true,
+				prompt_title = "Live Grep in Open Files",
+			})
+		end, { desc = "Find [/] in Open Files" })
+
+		-- Shortcut for searching your Neovim configuration files
+		vim.keymap.set("n", "<leader>fn", function()
+			builtin.find_files({ cwd = vim.fn.stdpath("config") })
+		end, { desc = "Find Neovim files" })
+	end,
 }

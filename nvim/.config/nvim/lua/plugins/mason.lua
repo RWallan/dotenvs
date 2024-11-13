@@ -32,12 +32,10 @@ return {
 				"dockerls", -- docker
 				"docker_compose_language_service", -- docker compose
 				"html", -- html
-				"jsonls", -- json
 				"ts_ls", -- javascript
 				"lua_ls", -- lua
 				"marksman", -- markdown
 				"pyright", -- python
-				"sqlls", -- sql
 				"taplo", -- toml
                 "tailwindcss", -- tailwindcss
                 "volar", -- vue
@@ -50,7 +48,7 @@ return {
 		mason_tool_installer.setup({
 			ensure_installed = {
 				"eslint_d", -- js
-				"prettier", -- html/js
+				"prettierd", -- html/js
 				"ruff_lsp", -- python
 				"stylua", -- lua
                 "sql-formatter", -- SQL Formatter

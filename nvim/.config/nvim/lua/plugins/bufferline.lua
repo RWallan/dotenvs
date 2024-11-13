@@ -8,10 +8,10 @@ return {
 			local bufferline = require("bufferline")
 			bufferline.setup({
 				options = {
-                    style_preset = bufferline.style_preset.minimal,
+					style_preset = bufferline.style_preset.minimal,
 					diagnostics = "nvim_lsp",
-                    separator_style = {"", ""},
-                    show_buffer_close_icons = false,
+					separator_style = { "", "" },
+					show_buffer_close_icons = false,
 				},
 				highlights = {
 					buffer_visible = {

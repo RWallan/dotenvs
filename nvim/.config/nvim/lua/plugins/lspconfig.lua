@@ -1,6 +1,7 @@
 return { -- LSP Plugins
 	{
 		"folke/lazydev.nvim",
+		event = { "BufReadPre", "BufNewFile" },
 		ft = "lua",
 		opts = {
 			library = {
@@ -24,6 +25,7 @@ return { -- LSP Plugins
 			-- Allows extra capabilities provided by nvim-cmp
 			"hrsh7th/cmp-nvim-lsp",
 		},
+		event = { "BufReadPre", "BufNewFile" },
 		config = function()
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),

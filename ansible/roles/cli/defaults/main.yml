@@ -1,6 +1,5 @@
 ---
 cli_packages:
-  - tmux
   - bash-completion
   - starship # prompt (bash/.bashrc.evals + starship/.config/starship.toml)
   - eza
@@ -21,3 +20,7 @@ cli_packages:
   - file
   - 7zip
   - chafa
+
+# Só no Arch nativo (no WSL o Windows Terminal já faz abas e splits)
+cli_native_packages:
+  - tmux

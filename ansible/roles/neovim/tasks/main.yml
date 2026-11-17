@@ -22,21 +22,23 @@
     - not neovim_claude_stat.stat.exists
 
 # ---------------------------------------------------------------------------
-# tmux
+# tmux (não instalado no WSL)
 # ---------------------------------------------------------------------------
-- name: Clona o TPM (gerenciador de plugins do tmux)
-  ansible.builtin.git:
-    repo: https://github.com/tmux-plugins/tpm
-    dest: "{{ neovim_tpm_dir }}"
-    version: "{{ neovim_tpm_version }}"
-    depth: 1
+- name: Configura o tmux e seus plugins
+  when: not (is_wsl | bool)
   tags: [tmux]
+  block:
+    - name: Clona o TPM (gerenciador de plugins do tmux)
+      ansible.builtin.git:
+        repo: https://github.com/tmux-plugins/tpm
+        dest: "{{ neovim_tpm_dir }}"
+        version: "{{ neovim_tpm_version }}"
+        depth: 1
 
-- name: Instala os plugins do tmux
-  ansible.builtin.command: "{{ neovim_tpm_dir }}/bin/install_plugins"
-  register: neovim_tpm_install
-  changed_when: "'download success' in neovim_tpm_install.stdout"
-  tags: [tmux]
+    - name: Instala os plugins do tmux
+      ansible.builtin.command: "{{ neovim_tpm_dir }}/bin/install_plugins"
+      register: neovim_tpm_install
+      changed_when: "'download success' in neovim_tpm_install.stdout"
 
 # ---------------------------------------------------------------------------
 # Neovim headless (versões do lazy-lock.json, parsers e ferramentas do Mason)

@@ -16,6 +16,7 @@ Inspirações:
 ```
 dotenvs/
 ├── bootstrap.sh            # ponto de entrada: instala o Ansible e roda o playbook
+├── archinstall/config.json # instalação mínima do Arch nativo, pronta para o bootstrap
 ├── config.yaml             # dotdrop: dotfiles e perfis (base, wsl, hyprland)
 ├── dotfiles/
 │   ├── home/               # -> ~/        (bashrc, bash_profile, inputrc, tmux.conf...)
@@ -143,21 +144,55 @@ wsl --terminate archlinux
 ~/dotenvs/bootstrap.sh
 ```
 
-### C) Arch nativo com Hyprland
+### C) Arch nativo com Hyprland (do zero, com archinstall)
 
-1. Instale o Arch com o `archinstall`, perfil **minimal**, com NetworkManager, PipeWire e
-   seu usuário no grupo `wheel`. Não precisa escolher desktop nem display manager.
-2. Faça login no TTY e rode:
+O `archinstall/config.json` instala só o mínimo para o Ansible assumir no primeiro login:
+
+- **Sistema:** perfil `Minimal`, kernel `linux`, systemd-boot (UEFI) e zram.
+- **Rede:** NetworkManager, para ter internet no primeiro boot.
+- **Pacotes extras:** apenas `git` e `ansible-core`.
+- **Ajustes:** teclado ABNT2, fuso de São Paulo e locales `en_US`/`pt_BR`.
+- **Repositório:** já clonado em `~/dotenvs`.
+
+Desktop, áudio, fontes e ferramentas ficam com o Ansible. **Disco e senhas não estão no
+arquivo**: o archinstall pede esses dados no menu, para nunca apagar o disco errado nem
+publicar senha.
+
+1. **Dê boot na ISO do Arch** e conecte-se à internet. No cabo é automático; no Wi-Fi:
 
    ```bash
-   sudo pacman -S --needed git
-   git clone https://github.com/RWallan/dotenvs.git ~/dotenvs
+   iwctl station wlan0 connect "<rede>"
+   ```
+
+2. **Rode o archinstall com a config do repositório** (atualize-o antes; a config é da
+   versão 4.5):
+
+   ```bash
+   pacman -Sy archinstall
+   archinstall --config-url https://raw.githubusercontent.com/RWallan/dotenvs/main/archinstall/config.json
+   ```
+
+3. **No menu, preencha só o que falta:**
+   - **Disk configuration** → *Use a best-effort default partition layout* → escolha o
+     disco (ext4 ou btrfs).
+   - **Authentication** → senha do root e **um usuário marcado como superuser** (sudo).
+     O usuário criado é o que recebe o `~/dotenvs`.
+   - **Install**.
+
+4. **Reinicie, entre com o seu usuário no TTY** e rode o bootstrap:
+
+   ```bash
+   nmtui                  # só se for Wi-Fi: conecta a rede pelo NetworkManager
    ~/dotenvs/bootstrap.sh
    ```
 
-3. Reinicie e faça login no **TTY1**: o `~/.bash_profile` abre o Hyprland
+5. **Saia e entre de novo no TTY1**: o `~/.bash_profile` abre o Hyprland
    (`start-hyprland`). Para não abrir, use outro TTY (Ctrl+Alt+F2).
-4. Ajuste o monitor em `dotfiles/config/hypr/hyprland.lua` se precisar (`hyprctl monitors`).
+6. Ajuste o monitor em `dotfiles/config/hypr/hyprland.lua` se precisar (`hyprctl monitors`).
+
+> O perfil `Minimal` não instala driver de vídeo. Intel e AMD funcionam com o `mesa`, que
+> vem como dependência do Hyprland. Para NVIDIA, instale `nvidia-open` (placas Turing ou
+> mais novas) e veja a página de NVIDIA do wiki do Hyprland.
 
 ## Desktop Hyprland = o antigo i3
 

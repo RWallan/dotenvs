@@ -1,0 +1,43 @@
+{
+    "archinstall-language": "English",
+    "script": "guided",
+    "locale_config": {
+        "kb_layout": "br-abnt2",
+        "sys_lang": "en_US.UTF-8",
+        "sys_enc": "UTF-8"
+    },
+    "timezone": "America/Sao_Paulo",
+    "ntp": true,
+    "hostname": "arch",
+    "kernels": [
+        "linux"
+    ],
+    "bootloader_config": {
+        "bootloader": "Systemd-boot",
+        "uki": false,
+        "removable": false
+    },
+    "swap": {
+        "enabled": true,
+        "algorithm": "zstd"
+    },
+    "network_config": {
+        "type": "nm"
+    },
+    "profile_config": {
+        "profile": {
+            "main": "Minimal"
+        }
+    },
+    "packages": [
+        "git",
+        "ansible-core"
+    ],
+    "pacman_config": {
+        "parallel_downloads": 5,
+        "color": true
+    },
+    "custom_commands": [
+        "set -e\n# pt_BR.UTF-8 além do en_US (data por extenso no hyprlock)\nsed -i 's/^#\\(pt_BR\\.UTF-8 UTF-8\\)/\\1/' /etc/locale.gen\nlocale-gen\n# Clona os dotfiles na home do usuário criado no menu (UID 1000)\nuser=\"$(getent passwd 1000 | cut -d: -f1)\"\nif [ -n \"$user\" ] && [ ! -e \"/home/$user/dotenvs\" ]; then\n  runuser -u \"$user\" -- git clone https://github.com/RWallan/dotenvs.git \"/home/$user/dotenvs\"\nfi"
+    ]
+}

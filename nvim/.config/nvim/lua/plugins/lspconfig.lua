@@ -110,12 +110,37 @@ return { -- LSP Plugins
 			-- As capabilities do blink.cmp já são aplicadas em `vim.lsp.config("*")` pelo próprio plugin.
 			local servers = {
 				marksman = {},
-				gopls = {},
 				pyright = {},
-				rust_analyzer = {},
+				-- Web / Svelte (o lspconfig já avisa o svelte ao salvar arquivos .js/.ts)
 				ts_ls = {},
 				cssls = {},
 				svelte = {},
+				eslint = {}, -- só ativa em projetos com config do eslint
+				-- TOML (Cargo.toml, pyproject.toml...)
+				taplo = {},
+				-- Go
+				gopls = {
+					settings = {
+						gopls = {
+							gofumpt = true,
+							staticcheck = true,
+							completeUnimported = true,
+							analyses = {
+								unusedparams = true,
+								unusedwrite = true,
+								nilness = true,
+							},
+							hints = {
+								assignVariableTypes = true,
+								compositeLiteralFields = true,
+								constantValues = true,
+								functionTypeParameters = true,
+								parameterNames = true,
+								rangeVariableTypes = true,
+							},
+						},
+					},
+				},
 				lua_ls = {
 					settings = {
 						Lua = {
@@ -133,12 +158,28 @@ return { -- LSP Plugins
 				end
 			end
 
+			-- Rust: o rust-analyzer vem do rustup (`rustup component add rust-analyzer`),
+			-- assim acompanha a versão do toolchain do projeto (rust-toolchain.toml)
+			vim.lsp.config("rust_analyzer", {
+				settings = {
+					["rust-analyzer"] = {
+						check = { command = "clippy" },
+						cargo = { allFeatures = true },
+					},
+				},
+			})
+			if vim.fn.executable("rust-analyzer") == 1 then
+				vim.lsp.enable("rust_analyzer")
+			end
+
 			local ensure_installed = vim.tbl_keys(servers)
 			vim.list_extend(ensure_installed, {
 				"stylua",
 				"ruff",
 				"prettierd",
 				"gofumpt",
+				"goimports",
+				"golangci-lint",
 				"markdownlint",
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
@@ -147,7 +188,8 @@ return { -- LSP Plugins
 			require("mason-lspconfig").setup({
 				ensure_installed = {},
 				-- stylua é usado via conform.nvim, não precisa rodar como LSP
-				automatic_enable = { exclude = { "stylua" } },
+				-- rust_analyzer é habilitado acima, a partir do rustup
+				automatic_enable = { exclude = { "stylua", "rust_analyzer" } },
 			})
 		end,
 	},

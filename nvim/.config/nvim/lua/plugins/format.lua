@@ -25,9 +25,18 @@ return { -- Autoformat
 		formatters_by_ft = {
 			lua = { "stylua" },
 			python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
-			go = { "gofumpt", "goimports" },
+			go = { "goimports", "gofumpt" },
+			rust = { "rustfmt" },
 			javascript = { "prettierd" },
 			typescript = { "prettierd" },
+			-- Usa o prettier do projeto (com prettier-plugin-svelte) quando houver config;
+			-- senão cai no formatador do svelte-language-server (lsp_format = "fallback")
+			svelte = function(bufnr)
+				local has_prettier_config = vim.fs.root(bufnr, function(name)
+					return name:match("^%.prettierrc") ~= nil or name:match("^prettier%.config%.") ~= nil
+				end)
+				return has_prettier_config and { "prettierd" } or {}
+			end,
 		},
 	},
 }

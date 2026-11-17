@@ -1,18 +1,4 @@
-local parsers = {
-	"bash",
-	"diff",
-	"html",
-	"lua",
-	"luadoc",
-	"markdown",
-	"markdown_inline",
-	"vim",
-	"vimdoc",
-	"python",
-	"svelte",
-	"typescript",
-	"javascript",
-}
+local parsers = require("parsers")
 
 return {
 	"nvim-treesitter/nvim-treesitter",

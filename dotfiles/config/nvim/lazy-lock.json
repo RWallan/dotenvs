@@ -1,4 +1,5 @@
 {
+  "antigravity.nvim": { "branch": "main", "commit": "7efd98c28b17bf1031c65f389a11364831c0abe5" },
   "auto-session": { "branch": "main", "commit": "02a5588f677970a9bc784115c62bef9e5855499b" },
   "blink.cmp": { "branch": "main", "commit": "3d3631f641e6e9b60066f269f435d23c524ceeb0" },
   "blink.lib": { "branch": "main", "commit": "fd9a48ebbe6ec30d5dfcc5b42c243941ccdca1aa" },

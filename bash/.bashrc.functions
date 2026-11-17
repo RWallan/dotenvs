@@ -6,8 +6,18 @@ _fzf_comprun() {
     cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
     export|unset) fzf --preview "eval 'echo \$' {}" ;;
     ssh)          fzf --preview 'dig {}' ;;
-    *)            fzf --preview "--preview 'bat -n --color=always --line-range :500 {}'" "$@" ;;
+    *)            fzf --preview 'bat -n --color=always --line-range :500 {}' "$@" ;;
   esac
+}
+
+# yazi: ao sair, o shell muda para o diretório em que você estava no yazi
+y() {
+  local tmp cwd
+  tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+  yazi "$@" --cwd-file="$tmp"
+  IFS= read -r -d '' cwd < "$tmp"
+  [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+  rm -f -- "$tmp"
 }
 
 poetry() {

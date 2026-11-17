@@ -7,7 +7,6 @@
         "lavender": "#B4BEFE",
         "blue":  "#89B4FA"
   },
-  "pwd": "osc99",
   "blocks": [
     {
       "alignment": "left",
@@ -21,28 +20,28 @@
         {
           "foreground": "p:blue",
           "style": "plain",
-          "template": "{{ .UserName }} ",
+          "template": "{{ .UserName }}",
           "type": "session"
         },
         {
           "foreground": "p:pink",
           "properties": {
             "folder_icon": "\ue5fe",
-            "home_icon": "~",
+            "home_icon": " ~",
             "style": "agnoster_full"
           },
           "style": "plain",
           "template": "{{ .Path }} ",
           "type": "path"
         },
-	{
-	  "type": "python",
-	  "style": "powerline",
-	  "powerline_symbol": "",
-	  "foreground": "#100e23",
-	  "background": "#F5C2E7",
-	  "template": "  {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }} "
-	},
+        {
+          "type": "python",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "foreground": "#100e23",
+          "background": "p:pink",
+          "template": "  {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }} "
+        },
         {
           "foreground": "p:lavender",
           "properties": {
@@ -57,7 +56,7 @@
             "revert_icon": "\uf0e2 ",
             "tag_icon": "\uf412 "
           },
-          "template": "{{ .HEAD }} ",
+          "template": " {{ .HEAD }} ",
           "style": "plain",
           "type": "git"
         },
@@ -72,5 +71,5 @@
     }
   ],
   "final_space": true,
-  "version": 2
+  "version": 3
 }

@@ -48,6 +48,11 @@ for _d in "$HOME/Downloads/google-cloud-sdk" "$HOME/google-cloud-sdk" /opt/googl
 done
 unset _d
 
+# Ferramentas instaladas pelo Mason do Neovim (pyright, ruff, stylua, prettierd...).
+# No fim do PATH: o .venv do projeto e o sistema têm prioridade. Assim uma única
+# instalação serve ao Neovim e a outros clientes de LSP (ex.: plugin pyright-lsp do Claude Code).
+path_append "${XDG_DATA_HOME:-$HOME/.local/share}/nvim/mason/bin"
+
 # ---------------------------------------------------------------------------
 # WSL: integração com o Windows
 # ---------------------------------------------------------------------------

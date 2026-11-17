@@ -1,23 +1,60 @@
 ---
-- name: Instala o docker
-  become: true
-  community.general.pacman:
-    name: "{{ docker_packages }}"
-    state: present
+# Falhas de Docker nunca interrompem o playbook: viram um aviso (docker_warning),
+# repetido no resumo final, e os outros roles continuam.
 
-- name: Habilita o serviço
-  become: true
-  ansible.builtin.systemd_service:
-    name: docker.service
-    enabled: true
-    state: started
-  ignore_errors: "{{ ansible_check_mode }}" # no --check o serviço pode ainda não existir
-  when: ansible_facts.service_mgr == "systemd"
+# WSL: o docker vem do Docker Desktop (integração com o Windows); só verifica
+- name: Verifica o Docker Desktop (WSL)
+  ansible.builtin.command: docker version --format "{{ '{{' }}.Server.Version{{ '}}' }}"
+  register: docker_desktop_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: is_wsl | bool
 
-- name: Adiciona o usuário ao grupo docker
-  become: true
-  ansible.builtin.user:
-    name: "{{ username }}"
-    groups: docker
-    append: true
-  notify: Avisa sobre o grupo docker
+- name: Avisa que o Docker Desktop não está disponível
+  ansible.builtin.set_fact:
+    docker_warning: >-
+      Docker indisponível no WSL ({{ (docker_desktop_check.stderr | default('') or docker_desktop_check.msg | default(''))
+      | regex_replace('\n.*', '') | truncate(120) }}). Abra o Docker Desktop no Windows e ative
+      Settings > Resources > WSL Integration para esta distro.
+  when:
+    - is_wsl | bool
+    - docker_desktop_check.rc | default(1) != 0
+
+# Arch nativo: instala e habilita o docker
+- name: Docker nativo
+  when: not (is_wsl | bool)
+  block:
+    - name: Instala o docker
+      become: true
+      community.general.pacman:
+        name: "{{ docker_packages }}"
+        state: present
+
+    - name: Habilita o serviço
+      become: true
+      ansible.builtin.systemd_service:
+        name: docker.service
+        enabled: true
+        state: started
+      when: ansible_facts.service_mgr == "systemd"
+      ignore_errors: "{{ ansible_check_mode }}" # no --check o serviço pode ainda não existir
+
+    - name: Adiciona o usuário ao grupo docker
+      become: true
+      ansible.builtin.user:
+        name: "{{ username }}"
+        groups: docker
+        append: true
+      notify: Avisa sobre o grupo docker
+  rescue:
+    - name: Registra a falha do docker e segue com os outros passos
+      ansible.builtin.set_fact:
+        docker_warning: >-
+          Falha ao configurar o docker em "{{ ansible_failed_task.name }}":
+          {{ ansible_failed_result.msg | default('erro desconhecido') | truncate(200) }}
+
+- name: Mostra o aviso do docker
+  ansible.builtin.debug:
+    msg: "[AVISO] {{ docker_warning }}"
+  when: docker_warning is defined

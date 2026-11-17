@@ -52,10 +52,11 @@
         PYENV_ROOT: "{{ home_dir }}/.pyenv"
     - role: cli
       tags: [cli]
-    # No WSL o docker vem do Docker Desktop (integração com o Windows): nunca instala o nativo
+    # Arch nativo: instala o docker. WSL: só verifica o Docker Desktop (nunca instala o nativo).
+    # Erros aqui viram aviso e o playbook segue.
     - role: docker
       tags: [docker]
-      when: install_docker | bool and not (is_wsl | bool)
+      when: install_docker | bool
     - role: cloud
       tags: [cloud]
       when: install_cloud | bool
@@ -74,6 +75,7 @@
         msg: >-
           {{ ['Abra um novo terminal para carregar o PATH e o .bashrc.', 'Valide com :checkhealth no Neovim.']
              + (['WSL: use uma Nerd Font (MesloLGS ou JetBrainsMono) no perfil do Arch no Windows Terminal.'] if (is_wsl | bool) else [])
+             + (['[AVISO] ' ~ docker_warning] if docker_warning is defined else [])
              + (['Hyprland: faça login no TTY1 e ele abre sozinho. SUPER+Enter terminal, SUPER+D apps, SUPER+SHIFT+E sair.']
                 if (not (is_wsl | bool) and desktop == 'hyprland') else []) }}
       tags: [always]

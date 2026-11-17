@@ -1,0 +1,23 @@
+---
+cli_packages:
+  - tmux
+  - bash-completion
+  - starship # prompt (bash/.bashrc.evals + starship/.config/starship.toml)
+  - eza
+  - bat
+  - fzf
+  - fd
+  - ripgrep
+  - zoxide
+  - fastfetch
+  - jq
+  - lazygit
+  - lazydocker
+  - github-cli
+  - terraform
+  # yazi + previews leves (tipo de arquivo, compactados, imagens em texto)
+  # Previews de vídeo/pdf/svg ficam só no desktop (role hyprland)
+  - yazi
+  - file
+  - 7zip
+  - chafa

@@ -1,0 +1,18 @@
+#
+# ~/.bash_profile
+#
+# O WSL (e o login no Arch) abre o bash como shell de login, que lê este arquivo
+# e não o ~/.bashrc. Toda a configuração fica no ~/.bashrc.
+#
+# Instaladores (rustup, pipx, Antigravity...) costumam anexar linhas de PATH aqui.
+# Como este arquivo é versionado, elas aparecem no `git status`: descarte-as, o
+# PATH já é tratado em ~/.bashrc.envvars (ou mova para ~/.bashrc.local).
+
+# Desktop: login no TTY1 abre o Hyprland (sem display manager).
+# Fica antes do .bashrc, que abriria o tmux.
+if [[ -z "$WAYLAND_DISPLAY" && -z "$DISPLAY" && "${XDG_VTNR:-0}" -eq 1 ]] \
+  && command -v start-hyprland &> /dev/null; then
+  exec start-hyprland
+fi
+
+[[ -f ~/.bashrc ]] && . ~/.bashrc

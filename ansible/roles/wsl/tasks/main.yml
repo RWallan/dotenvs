@@ -1,0 +1,21 @@
+---
+- name: Instala a integração com o Windows (AUR)
+  become: true
+  become_user: "{{ aur_builder }}"
+  kewlfft.aur.aur:
+    name: "{{ wsl_aur_packages }}"
+    use: yay
+    state: present
+
+- name: Configura o /etc/wsl.conf (systemd e usuário padrão)
+  become: true
+  community.general.ini_file:
+    path: /etc/wsl.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    mode: "0644"
+  loop:
+    - { section: boot, option: systemd, value: "true" }
+    - { section: user, option: default, value: "{{ username }}" }
+  notify: Avisa que o WSL precisa reiniciar

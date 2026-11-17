@@ -1,0 +1,16 @@
+---
+base_packages:
+  - base-devel
+  - git
+  - curl
+  - wget
+  - unzip
+  - zip
+  - tar
+  - gzip
+  - lsof
+  - procps-ng
+  - which
+  - less
+  - man-db
+  - python # interpretador do Ansible e base do pipx

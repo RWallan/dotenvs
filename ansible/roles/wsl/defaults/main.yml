@@ -1,0 +1,6 @@
+---
+# wslview: abre links (login do claude, gh, gcloud) no navegador do Windows
+# win32yank: clipboard do Neovim integrado ao Windows
+wsl_aur_packages:
+  - wslu
+  - win32yank-bin

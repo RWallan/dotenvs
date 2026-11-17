@@ -1,0 +1,74 @@
+---
+- name: Instala o dotdrop (AUR)
+  become: true
+  become_user: "{{ aur_builder }}"
+  kewlfft.aur.aur:
+    name: dotdrop
+    use: yay
+    state: present
+  tags: [packages]
+
+- name: Lista os dotfiles do perfil {{ dotfiles_profile }}
+  ansible.builtin.command: >-
+    {{ dotfiles_dotdrop }} files --grepable --no-banner
+    --cfg={{ dotfiles_config }} --profile={{ dotfiles_profile }}
+  environment:
+    HOME: "{{ home_dir }}"
+  register: dotfiles_list
+  changed_when: false
+  check_mode: false
+
+# Com -f o dotdrop apaga o que existir no destino (inclusive diretórios) sem backup
+- name: Move conflitos para {{ dotfiles_backup_dir }}
+  ansible.builtin.shell: >-
+    {{ role_path }}/files/backup-conflicts.sh {{ dotfiles_backup_dir | quote }}
+    <<< {{ dotfiles_list.stdout | quote }}
+  args:
+    executable: /bin/bash
+  environment:
+    HOME: "{{ home_dir }}"
+  register: dotfiles_backup
+  changed_when: dotfiles_backup.stdout | length > 0
+
+- name: Mostra o que foi para o backup (leve o que for da máquina para ~/.bashrc.local)
+  ansible.builtin.debug:
+    msg: "{{ dotfiles_backup.stdout_lines }}"
+  when: dotfiles_backup.stdout_lines | default([]) | length > 0
+
+- name: Instala os dotfiles (symlinks para o repositório)
+  ansible.builtin.command: >-
+    {{ dotfiles_dotdrop }} install --force --no-banner
+    --cfg={{ dotfiles_config }} --profile={{ dotfiles_profile }}
+  environment:
+    HOME: "{{ home_dir }}"
+  register: dotfiles_install
+  changed_when: dotfiles_install.stdout is not search('^0 dotfile\(s\) installed', multiline=True)
+
+# O .bashrc novo usa o Starship; o oh-my-posh (instalado à mão) só era usado pelo antigo
+- name: Remove os resquícios do oh-my-posh
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ home_dir }}/.local/bin/oh-my-posh"
+    - "{{ home_dir }}/jandedobbeleer.omp.json"
+    - "{{ home_dir }}/.cache/oh-my-posh"
+
+- name: Cria o ~/.bashrc.local (segredos e ajustes da máquina; não versionado)
+  ansible.builtin.copy:
+    dest: "{{ home_dir }}/.bashrc.local"
+    content: |
+      # Configurações desta máquina e segredos (tokens, senhas, PATHs específicos).
+      # Este arquivo NÃO é versionado: é carregado no fim do ~/.bashrc.
+    mode: "0600"
+    force: false
+  notify: Leva os segredos do .bashrc antigo para o ~/.bashrc.local
+
+# Assim `dotdrop install`/`compare` funcionam de qualquer pasta, sem -c/-p
+- name: Configura o dotdrop no ~/.bashrc.local
+  ansible.builtin.blockinfile:
+    path: "{{ home_dir }}/.bashrc.local"
+    marker: "# {mark} dotdrop (gerenciado pelo Ansible)"
+    block: |
+      export DOTDROP_CONFIG="{{ dotfiles_config }}"
+      export DOTDROP_PROFILE="{{ dotfiles_profile }}"

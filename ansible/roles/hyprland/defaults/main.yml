@@ -1,0 +1,45 @@
+---
+# Desktop mínimo, equivalente ao antigo i3: cada pacote aqui é usado por
+# dotfiles/config/hypr/hyprland.lua, pela waybar ou pelos atalhos.
+hyprland_packages:
+  # Compositor (o picom do i3 é embutido no Hyprland)
+  - hyprland
+  - xdg-desktop-portal-hyprland # compartilhamento de tela, screenshots
+  - xdg-desktop-portal-gtk # seletor de arquivos de apps GTK
+  # i3 -> Hyprland
+  - waybar # polybar
+  - wofi # dmenu
+  - hyprpaper # feh
+  - hypridle # xss-lock
+  - hyprlock # i3lock
+  - hyprshot # gnome-screenshot
+  - kitty # alacritty
+  # Áudio (wpctl), rede (nmtui), bluetooth (bluetoothctl), brilho
+  - pipewire
+  - pipewire-pulse
+  - wireplumber
+  - networkmanager
+  - bluez
+  - bluez-utils
+  - brightnessctl
+  # Previews do yazi no kitty (vídeo, pdf, svg, imagens diversas)
+  - ffmpeg
+  - poppler
+  - resvg
+  - imagemagick
+  # Apps
+  - nemo
+  - imv # imagens
+  - mpv # vídeo
+  # Fonte e dark mode GTK (gsettings no autostart)
+  - ttf-jetbrains-mono-nerd
+  - noto-fonts
+  - noto-fonts-emoji
+  - adw-gtk-theme
+
+hyprland_aur_packages:
+  - waterfox-bin # qutebrowser
+
+# Desligue se a máquina usa outro gerenciador de rede (iwd/systemd-networkd)
+hyprland_enable_networkmanager: true
+hyprland_enable_bluetooth: true

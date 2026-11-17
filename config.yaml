@@ -1,0 +1,109 @@
+# dotdrop — https://dotdrop.readthedocs.io
+#
+#   dotdrop install            # instala o perfil de $DOTDROP_PROFILE (definido no ~/.bashrc.local)
+#   dotdrop compare            # mostra o que difere entre a $HOME e o repositório
+#   dotdrop files              # lista os dotfiles do perfil
+#   dotdrop profiles           # lista os perfis (base, wsl, hyprland)
+#
+# Tudo é instalado como symlink relativo: editar ~/.config/... edita o repositório.
+config:
+  dotpath: dotfiles
+  link_dotfile_default: relative
+  # Nenhum arquivo usa templates do dotdrop; evita interpretar {{ }} de outras ferramentas
+  template_dotfile_default: false
+  # O backup de conflitos é feito pelo Ansible (o dotdrop não salva diretórios)
+  backup: false
+  banner: false
+  create: true
+
+dotfiles:
+  # ~ -------------------------------------------------------------------------
+  f_bash_profile:
+    src: home/bash_profile
+    dst: ~/.bash_profile
+  f_bashrc:
+    src: home/bashrc
+    dst: ~/.bashrc
+  f_bashrc_envvars:
+    src: home/bashrc.envvars
+    dst: ~/.bashrc.envvars
+  f_bashrc_aliases:
+    src: home/bashrc.aliases
+    dst: ~/.bashrc.aliases
+  f_bashrc_functions:
+    src: home/bashrc.functions
+    dst: ~/.bashrc.functions
+  f_bashrc_evals:
+    src: home/bashrc.evals
+    dst: ~/.bashrc.evals
+  f_tmux_conf:
+    src: home/tmux.conf
+    dst: ~/.tmux.conf
+  f_inputrc:
+    src: home/inputrc
+    dst: ~/.inputrc
+  f_background:
+    src: home/background.png
+    dst: ~/background.png
+
+  # ~/.config — terminal ------------------------------------------------------
+  d_nvim:
+    src: config/nvim
+    dst: ~/.config/nvim
+  d_yazi:
+    src: config/yazi
+    dst: ~/.config/yazi
+  f_starship:
+    src: config/starship.toml
+    dst: ~/.config/starship.toml
+  d_ripgrep:
+    src: config/ripgrep
+    dst: ~/.config/ripgrep
+
+  # ~/.config — desktop Hyprland ----------------------------------------------
+  d_hypr:
+    src: config/hypr
+    dst: ~/.config/hypr
+  d_waybar:
+    src: config/waybar
+    dst: ~/.config/waybar
+  d_wofi:
+    src: config/wofi
+    dst: ~/.config/wofi
+  d_kitty:
+    src: config/kitty
+    dst: ~/.config/kitty
+
+profiles:
+  # Terminal (bash, tmux, Neovim, yazi, Starship): base de todos os perfis
+  base:
+    description: terminal (bash, readline, tmux, nvim, yazi, starship, ripgrep)
+    dotfiles:
+      - f_bash_profile
+      - f_bashrc
+      - f_bashrc_envvars
+      - f_bashrc_aliases
+      - f_bashrc_functions
+      - f_bashrc_evals
+      - f_tmux_conf
+      - f_inputrc
+      - d_nvim
+      - d_yazi
+      - f_starship
+      - d_ripgrep
+
+  wsl:
+    description: Arch no WSL (só terminal)
+    include:
+      - base
+
+  hyprland:
+    description: Arch nativo com Hyprland
+    include:
+      - base
+    dotfiles:
+      - f_background
+      - d_hypr
+      - d_waybar
+      - d_wofi
+      - d_kitty

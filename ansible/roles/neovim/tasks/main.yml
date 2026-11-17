@@ -1,0 +1,58 @@
+---
+- name: Instala o Neovim e dependências dos plugins
+  become: true
+  community.general.pacman:
+    name: "{{ neovim_packages + ([] if (is_wsl | bool) else neovim_clipboard_packages) }}"
+    state: present
+
+- name: Procura o claude instalado pelo instalador nativo
+  ansible.builtin.stat:
+    path: "{{ neovim_claude_path }}"
+  register: neovim_claude_stat
+
+- name: Instala o claude-code (AUR)
+  become: true
+  become_user: "{{ aur_builder }}"
+  kewlfft.aur.aur:
+    name: claude-code
+    use: yay
+    state: present
+  when: not neovim_claude_stat.stat.exists
+
+# ---------------------------------------------------------------------------
+# tmux
+# ---------------------------------------------------------------------------
+- name: Clona o TPM (gerenciador de plugins do tmux)
+  ansible.builtin.git:
+    repo: https://github.com/tmux-plugins/tpm
+    dest: "{{ neovim_tpm_dir }}"
+    version: "{{ neovim_tpm_version }}"
+    depth: 1
+  tags: [tmux]
+
+- name: Instala os plugins do tmux
+  ansible.builtin.command: "{{ neovim_tpm_dir }}/bin/install_plugins"
+  register: neovim_tpm_install
+  changed_when: "'download success' in neovim_tpm_install.stdout"
+  tags: [tmux]
+
+# ---------------------------------------------------------------------------
+# Neovim headless (versões do lazy-lock.json, parsers e ferramentas do Mason)
+# ---------------------------------------------------------------------------
+- name: Bootstrap do Neovim
+  when: nvim_bootstrap | bool
+  block:
+    - name: Instala os plugins na versão do lazy-lock.json (e apaga os removidos)
+      ansible.builtin.command: nvim --headless "+Lazy! restore" "+Lazy! clean" +qa
+      changed_when: false
+
+    - name: Instala os parsers do treesitter (lua/parsers.lua)
+      ansible.builtin.command: >-
+        nvim --headless
+        -c "lua require('nvim-treesitter').install(require('parsers')):wait(600000)"
+        -c qa
+      changed_when: false
+
+    - name: Instala LSPs, formatters e linters via Mason
+      ansible.builtin.command: nvim --headless -c "Lazy! load nvim-lspconfig" -c MasonToolsInstallSync -c qa
+      changed_when: false

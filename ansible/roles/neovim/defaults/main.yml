@@ -1,0 +1,16 @@
+---
+neovim_packages:
+  - neovim
+  - tree-sitter-cli # nvim-treesitter (branch main) compila os parsers com ele
+  - ripgrep
+  - fd # telescope
+
+# Clipboard (clipboard=unnamedplus): no WSL vem do win32yank (role wsl)
+neovim_clipboard_packages: [wl-clipboard]
+
+# claude-code.nvim: só instala pelo AUR se não houver o instalador nativo
+# (~/.local/bin/claude, que se atualiza sozinho)
+neovim_claude_path: "{{ home_dir }}/.local/bin/claude"
+
+neovim_tpm_dir: "{{ home_dir }}/.tmux/plugins/tpm"
+neovim_tpm_version: v3.1.0

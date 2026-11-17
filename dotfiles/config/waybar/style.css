@@ -1,0 +1,59 @@
+/* Catppuccin Mocha — mesmo visual da polybar: workspace ativo em mauve, separadores "|" */
+* {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 12px;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+}
+
+window#waybar {
+  background: #1e1e2e;
+  color: #cdd6f4;
+}
+
+#workspaces button {
+  color: #cdd6f4;
+  padding: 0 6px;
+}
+
+#workspaces button.empty {
+  color: #6c7086;
+}
+
+#workspaces button.active {
+  background: #cba6f7;
+  color: #11111b;
+}
+
+#workspaces button.urgent {
+  background: #f38ba8;
+  color: #11111b;
+}
+
+#window {
+  padding: 0 8px;
+}
+
+#pulseaudio,
+#battery,
+#memory,
+#cpu,
+#network,
+#clock {
+  padding: 0 8px;
+  border-left: 1px solid #f2cdcd; /* separator = | (flamingo) */
+}
+
+#pulseaudio.muted,
+#network.disconnected {
+  color: #6c7086;
+}
+
+#battery.critical:not(.charging) {
+  color: #f38ba8;
+}
+
+#clock {
+  color: #cba6f7;
+}

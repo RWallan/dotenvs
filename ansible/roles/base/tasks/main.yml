@@ -1,0 +1,35 @@
+---
+- name: Atualiza o sistema e instala o básico
+  become: true
+  community.general.pacman:
+    name: "{{ base_packages }}"
+    state: present
+    update_cache: true
+    upgrade: "{{ system_upgrade | bool }}"
+
+# Padrão recomendado pela coleção kewlfft.aur: o makepkg não pode rodar como root,
+# então um usuário dedicado (sem senha) compila e só ele chama `sudo pacman` sem senha.
+- name: Cria o usuário que compila pacotes do AUR
+  become: true
+  ansible.builtin.user:
+    name: "{{ aur_builder }}"
+    create_home: true
+    shell: /usr/bin/nologin
+    system: true
+
+- name: Permite que ele rode pacman via sudo sem senha
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/11-install-aur_builder
+    content: "{{ aur_builder }} ALL=(ALL) NOPASSWD: /usr/bin/pacman\n"
+    mode: "0440"
+    validate: visudo -cf %s
+
+- name: Instala o yay
+  become: true
+  become_user: "{{ aur_builder }}"
+  kewlfft.aur.aur:
+    name: yay-bin
+    use: makepkg
+    state: present
+  when: "'yay' not in ansible_facts.packages and 'yay-bin' not in ansible_facts.packages"

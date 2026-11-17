@@ -1,0 +1,29 @@
+---
+- name: Instala linguagens e dependências de build
+  become: true
+  community.general.pacman:
+    name: "{{ languages_packages }}"
+    state: present
+
+- name: Procura instalações próprias de pyenv, uv e rustup
+  ansible.builtin.stat:
+    path: "{{ item.path }}"
+  loop: "{{ languages_tools }}"
+  loop_control:
+    label: "{{ item.package }}"
+  register: languages_tools_stat
+
+- name: Instala pelo pacman o que não estiver na home
+  become: true
+  community.general.pacman:
+    name: "{{ languages_tools_stat.results | rejectattr('stat.exists') | map(attribute='item.package') | list }}"
+    state: present
+  when: languages_tools_stat.results | rejectattr('stat.exists') | list | length > 0
+
+- name: Python
+  ansible.builtin.import_tasks: python.yml
+  tags: [python]
+
+- name: Rust
+  ansible.builtin.import_tasks: rust.yml
+  tags: [rust]

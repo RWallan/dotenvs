@@ -1,0 +1,2 @@
+---
+cloud_packages: [aws-cli-v2, azure-cli]

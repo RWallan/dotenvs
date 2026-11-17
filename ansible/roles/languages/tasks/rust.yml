@@ -1,0 +1,17 @@
+---
+- name: Verifica o toolchain padrão do Rust
+  ansible.builtin.command: rustup default
+  register: languages_rustup_default
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Instala o toolchain stable
+  ansible.builtin.command: rustup default stable
+  when: languages_rustup_default.rc != 0 or 'no default' in languages_rustup_default.stderr
+  changed_when: true
+
+- name: Instala os componentes ({{ languages_rust_components | join(', ') }})
+  ansible.builtin.command: rustup component add {{ languages_rust_components | join(' ') }}
+  register: languages_rustup_components
+  changed_when: "'downloading' in languages_rustup_components.stderr"

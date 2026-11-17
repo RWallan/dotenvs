@@ -1,0 +1,57 @@
+// Waybar — réplica da antiga polybar do i3:
+// barra embaixo, workspaces + título à esquerda, VOL/BAT/RAM/CPU/rede/hora à direita.
+{
+  "layer": "top",
+  "position": "bottom",
+  "height": 20,
+  "spacing": 0,
+
+  "modules-left": ["hyprland/workspaces", "hyprland/window"],
+  "modules-right": ["pulseaudio", "battery", "memory", "cpu", "network", "clock"],
+
+  "hyprland/workspaces": {
+    "format": "{name}",
+    "on-click": "activate"
+  },
+
+  "hyprland/window": {
+    "max-length": 60
+  },
+
+  "pulseaudio": {
+    "format": "<span color='#cba6f7'>VOL</span> {volume}%",
+    "format-muted": "muted",
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+  },
+
+  "battery": {
+    "format": "<span color='#cba6f7'>BAT</span> {capacity}%",
+    "format-charging": "<span color='#fab387'>BAT</span> {capacity}%",
+    "full-at": 99,
+    "states": { "critical": 5 }
+  },
+
+  "memory": {
+    "format": "<span color='#cba6f7'>RAM</span> {percentage}%",
+    "interval": 2
+  },
+
+  "cpu": {
+    "format": "<span color='#cba6f7'>CPU</span> {usage}%",
+    "interval": 2
+  },
+
+  "network": {
+    "format-wifi": "{essid}",
+    "format-ethernet": "{ifname} {ipaddr}",
+    "format-disconnected": "offline",
+    "interval": 5,
+    "on-click": "kitty -e nmtui"
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "format-alt": "{:%Y-%m-%d %H:%M:%S}",
+    "interval": 1
+  }
+}

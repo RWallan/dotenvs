@@ -1,0 +1,58 @@
+---
+- name: Resolve a última versão de cada Python ({{ python_versions | join(', ') }})
+  ansible.builtin.command: pyenv latest -k {{ item }}
+  loop: "{{ python_versions }}"
+  register: languages_pyenv_latest
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Instala as versões via pyenv (compila; demora na primeira vez)
+  ansible.builtin.command: pyenv install -s {{ item.stdout }}
+  args:
+    creates: "{{ home_dir }}/.pyenv/versions/{{ item.stdout }}"
+  loop: "{{ languages_pyenv_latest.results | selectattr('rc', 'equalto', 0) | list }}"
+  loop_control:
+    label: "{{ item.stdout }}"
+
+- name: Avisa sobre versões que o pyenv não conhece
+  ansible.builtin.debug:
+    msg: >-
+      pyenv não conhece: {{ languages_pyenv_latest.results | rejectattr('rc', 'equalto', 0)
+      | map(attribute='item') | join(', ') }} (atualize o pyenv).
+  when: languages_pyenv_latest.results | rejectattr('rc', 'equalto', 0) | list | length > 0
+
+- name: Define o Python global (só se ainda não houver um)
+  ansible.builtin.copy:
+    dest: "{{ home_dir }}/.pyenv/version"
+    content: "{{ (languages_pyenv_latest.results | selectattr('rc', 'equalto', 0) | first).stdout }}\n"
+    force: false
+    mode: "0644"
+  when: languages_pyenv_latest.results | selectattr('rc', 'equalto', 0) | list | length > 0
+
+# Usa o Python do sistema, para não quebrar quando uma versão do pyenv for removida
+- name: Instala ferramentas Python isoladas via pipx ({{ pipx_tools | join(', ') }})
+  community.general.pipx:
+    name: "{{ item }}"
+    state: present
+    python: /usr/bin/python
+  loop: "{{ pipx_tools }}"
+
+- name: Lê a configuração do poetry
+  ansible.builtin.command: poetry config {{ item }}
+  loop: [virtualenvs.in-project, virtualenvs.prompt]
+  register: languages_poetry_config
+  changed_when: false
+  check_mode: false
+  when: "'poetry' in pipx_tools"
+
+# .venv dentro do projeto: o `pshell`/`activate` do bash encontra o ambiente
+- name: Configura o poetry (.venv no projeto)
+  ansible.builtin.command: poetry config {{ item.key }} {{ item.value }}
+  loop:
+    - { key: virtualenvs.in-project, value: "true" }
+    - { key: virtualenvs.prompt, value: "{project_name}" }
+  when:
+    - "'poetry' in pipx_tools"
+    - (languages_poetry_config.results | selectattr('item', 'equalto', item.key) | first).stdout | default('') != item.value
+  changed_when: true

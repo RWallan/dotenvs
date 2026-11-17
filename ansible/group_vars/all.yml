@@ -1,0 +1,34 @@
+# Opções do ambiente. Sobrescreva na linha de comando, ex.:
+#   ./bootstrap.sh -e desktop=none -e install_cloud=true
+---
+# Repositório e home do usuário que roda o playbook
+dotfiles_dir: "{{ playbook_dir | dirname }}"
+home_dir: "{{ ansible_facts.user_dir }}"
+username: "{{ ansible_facts.user_id }}"
+user_path_dirs: [.local/bin, .cargo/bin, .pyenv/bin, .pyenv/shims, go/bin]
+user_path: "{{ (user_path_dirs | map('regex_replace', '^', home_dir ~ '/') | list + [ansible_facts.env.PATH]) | join(':') }}"
+
+# WSL é detectado pelo kernel (ex.: 6.6.87.2-microsoft-standard-WSL2)
+is_wsl: "{{ 'microsoft' in (ansible_facts.kernel | lower) }}"
+
+# Ambiente gráfico (ignorado no WSL): hyprland | none
+desktop: hyprland
+
+# pacman -Syu a cada execução
+system_upgrade: true
+
+# Docker nativo. É pulado sozinho quando o Docker Desktop (WSL) já fornece o `docker`.
+install_docker: true
+
+# aws-cli, azure-cli e google-cloud-cli
+install_cloud: false
+
+# Python: a primeira versão vira a global (se ainda não houver uma)
+python_versions: ["3.14", "3.13", "3.12"]
+pipx_tools: [poetry, posting, harlequin]
+
+# Usuário sem senha (só pode rodar pacman via sudo) usado para compilar pacotes do AUR
+aur_builder: aur_builder
+
+# Bootstrap headless do Neovim (lazy, treesitter, Mason) — é a parte mais lenta
+nvim_bootstrap: true

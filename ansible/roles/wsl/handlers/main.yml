@@ -1,0 +1,6 @@
+---
+- name: Avisa que o WSL precisa reiniciar
+  ansible.builtin.debug:
+    msg: >-
+      /etc/wsl.conf mudou: no PowerShell do Windows rode
+      `wsl --terminate {{ ansible_facts.env.WSL_DISTRO_NAME | default('<distro>') }}` e abra o Arch de novo.

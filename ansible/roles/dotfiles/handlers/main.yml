@@ -1,0 +1,23 @@
+---
+# Copia os `export` de segredos (TOKEN, KEY, SECRET, PASS, PWD) do .bashrc que foi
+# para o backup. Roda só quando o ~/.bashrc.local acabou de ser criado.
+- name: Leva os segredos do .bashrc antigo para o ~/.bashrc.local
+  ansible.builtin.shell: |
+    set -o pipefail
+    old="{{ dotfiles_backup_dir }}/.bashrc"
+    [ -f "$old" ] || exit 0
+    if grep -Eq '{{ dotfiles_secret_regex }}' "$old"; then
+      { echo; echo "# Migrado de $old"; grep -E '{{ dotfiles_secret_regex }}' "$old"; } >> "{{ home_dir }}/.bashrc.local"
+      grep -Eo '{{ dotfiles_secret_regex }}' "$old" | sed -E 's/.*export[[:space:]]+//; s/=$//' | paste -sd' '
+    fi
+  args:
+    executable: /bin/bash
+  register: dotfiles_migrated
+  changed_when: dotfiles_migrated.stdout | length > 0
+  no_log: true
+  notify: Mostra os segredos migrados
+
+- name: Mostra os segredos migrados
+  ansible.builtin.debug:
+    msg: "Variáveis levadas para ~/.bashrc.local: {{ dotfiles_migrated.stdout }}"
+  when: dotfiles_migrated.stdout | default('') | length > 0

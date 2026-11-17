@@ -1,0 +1,6 @@
+---
+- name: Instala as ferramentas de terminal
+  become: true
+  community.general.pacman:
+    name: "{{ cli_packages }}"
+    state: present

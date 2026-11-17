@@ -1,0 +1,31 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# Abre o tmux automaticamente (exceto dentro do tmux, do Neovim e do VS Code)
+if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -z "$NVIM" ] \
+  && [[ ! "$TERM" =~ screen|tmux ]] && [ "$TERM_PROGRAM" != "vscode" ]; then
+  exec tmux
+fi
+
+shopt -s checkwinsize histappend
+
+for file in ~/.bashrc.envvars ~/.bashrc.aliases ~/.bashrc.functions ~/.bashrc.evals; do
+  [ -e "$file" ] && source "$file"
+done
+unset file
+
+# Configurações específicas desta máquina e segredos (não versionado)
+[ -e ~/.bashrc.local ] && source ~/.bashrc.local
+
+# Grava cada comando no histórico na hora (painéis do tmux não perdem histórico).
+# Vai depois do hook do prompt (Starship), que precisa ler o exit code do comando.
+[[ "$PROMPT_COMMAND" == *"history -a"* ]] || PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }history -a"
+
+# fastfetch só no primeiro painel do tmux (ou fora dele), não em cada split
+if command -v fastfetch &> /dev/null && [[ -z "$TMUX" || "$TMUX_PANE" == "%0" ]]; then
+  fastfetch
+fi

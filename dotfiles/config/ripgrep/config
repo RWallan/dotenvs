@@ -1,0 +1,6 @@
+# ripgrep (RIPGREP_CONFIG_PATH em ~/.bashrc.envvars). Vale também para o Neovim e o fzf.
+--smart-case
+--hidden
+--glob=!.git/
+--max-columns=200
+--max-columns-preview

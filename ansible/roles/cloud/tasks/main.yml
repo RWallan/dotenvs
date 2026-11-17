@@ -1,0 +1,21 @@
+---
+- name: Instala aws-cli e azure-cli
+  become: true
+  community.general.pacman:
+    name: "{{ cloud_packages }}"
+    state: present
+
+# Quem já usa o tarball do Google Cloud SDK (~/Downloads/google-cloud-sdk) não precisa do pacote
+- name: Procura o Google Cloud SDK em tarball
+  ansible.builtin.stat:
+    path: "{{ home_dir }}/Downloads/google-cloud-sdk/bin/gcloud"
+  register: cloud_gcloud_tarball
+
+- name: Instala o google-cloud-cli (AUR)
+  become: true
+  become_user: "{{ aur_builder }}"
+  kewlfft.aur.aur:
+    name: google-cloud-cli
+    use: yay
+    state: present
+  when: not cloud_gcloud_tarball.stat.exists

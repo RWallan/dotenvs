@@ -1,0 +1,11 @@
+---
+# Perfil do dotdrop (config.yaml na raiz do repositório): wsl | hyprland | base
+dotfiles_profile: >-
+  {{ 'wsl' if (is_wsl | bool) else ('hyprland' if desktop == 'hyprland' else 'base') }}
+dotfiles_config: "{{ dotfiles_dir }}/config.yaml"
+dotfiles_dotdrop: dotdrop
+
+dotfiles_backup_dir: "{{ home_dir }}/.dotfiles-backup/{{ ansible_facts.date_time.iso8601_basic_short }}"
+
+# `export` com estes nomes no .bashrc antigo são levados para o ~/.bashrc.local
+dotfiles_secret_regex: '^[[:space:]]*export[[:space:]]+[A-Za-z0-9_]*(TOKEN|KEY|SECRET|PASS|PWD)[A-Za-z0-9_]*='

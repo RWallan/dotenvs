@@ -1,0 +1,31 @@
+# Só vale para o shell interativo: scripts continuam usando os comandos originais.
+# Cada substituto só é ativado se estiver instalado (senão fica o comando padrão).
+
+alias grep="grep --color=auto"
+alias diff="diff --color=auto"
+alias ip="ip -color=auto"
+
+alias lg="lazygit"
+alias lzd="lazydocker"
+
+# Python: ativa o .venv do projeto (uv e poetry com virtualenvs.in-project) — ver activate()
+alias pshell="activate"
+alias d="deactivate"
+
+# ls -> eza: diretórios primeiro, ícones e status do git. `--icons=auto` e a cor
+# automática desligam sozinhos em pipes (`ls | grep` continua funcionando).
+if command -v eza &> /dev/null; then
+  alias ls="eza --group-directories-first --icons=auto"
+  alias ll="eza --long --git --group-directories-first --icons=auto --time-style=relative --no-user"
+  alias la="ll --all"
+  alias lt="eza --tree --level=2 --git-ignore --group-directories-first --icons=auto"
+  alias tree="eza --tree --git-ignore --group-directories-first --icons=auto"
+else
+  alias ls="ls --color=auto"
+  alias ll="ls -lh --group-directories-first"
+  alias la="ll -A"
+fi
+
+# cat -> bat sem paginação nem moldura: no terminal ganha syntax highlight;
+# em pipe/redirecionamento o bat se comporta exatamente como o cat.
+command -v bat &> /dev/null && alias cat="bat --paging=never --style=plain"

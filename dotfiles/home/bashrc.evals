@@ -1,0 +1,45 @@
+# Scripts de init/completion ficam em cache e só são regenerados quando o
+# binário muda (atualização). Economiza ~250 ms por shell (cada painel do tmux).
+# Para forçar: bashrc_cache_clear
+_BASH_EVAL_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/bash-evals"
+
+# O cache é refeito quando o binário é atualizado ou quando o comando muda
+# (a 1ª linha do cache guarda o comando que o gerou).
+_cached_eval() { # _cached_eval <nome> <comando> [args...]
+  local name="$1" bin cache sig first=""
+  shift
+  bin="$(command -v "$1")" || return 0
+  cache="$_BASH_EVAL_CACHE/$name.bash"
+  sig="# $*"
+  [[ -s "$cache" ]] && read -r first < "$cache"
+  if [[ "$first" != "$sig" || "$bin" -nt "$cache" ]]; then
+    mkdir -p "$_BASH_EVAL_CACHE"
+    { printf '%s\n' "$sig" && "$@"; } > "$cache" 2> /dev/null || {
+      rm -f "$cache"
+      return 0
+    }
+  fi
+  source "$cache"
+}
+
+bashrc_cache_clear() {
+  rm -rf "$_BASH_EVAL_CACHE"
+  echo "Cache limpo; abra um novo shell."
+}
+
+# --no-rehash: os shims já são atualizados pelo `pyenv install`
+_cached_eval pyenv pyenv init - --no-rehash bash
+_cached_eval fzf fzf --bash
+# zoxide substitui o `cd`: `cd proj` pula para o diretório mais usado que casa com
+# "proj"; caminhos normais funcionam como antes. `cdi` escolhe com o fzf.
+_cached_eval zoxide zoxide init bash --cmd cd
+_cached_eval uv uv generate-shell-completion bash
+_cached_eval uvx uvx --generate-shell-completion bash
+
+if [ -n "${GCLOUD_SDK_DIR:-}" ] && [ -f "$GCLOUD_SDK_DIR/completion.bash.inc" ]; then
+  source "$GCLOUD_SDK_DIR/completion.bash.inc"
+fi
+
+# Prompt: Starship (config em ~/.config/starship.toml). O init completo é estático
+# (a chave de sessão é gerada em tempo de execução), então também vai para o cache.
+_cached_eval starship starship init bash --print-full-init

@@ -1,0 +1,36 @@
+---
+- name: Instala o Hyprland e os apps do desktop
+  become: true
+  community.general.pacman:
+    name: "{{ hyprland_packages }}"
+    state: present
+
+- name: Instala os apps do AUR
+  become: true
+  become_user: "{{ aur_builder }}"
+  kewlfft.aur.aur:
+    name: "{{ hyprland_aur_packages }}"
+    use: yay
+    state: present
+  when: hyprland_aur_packages | length > 0
+
+- name: Habilita o NetworkManager
+  become: true
+  ansible.builtin.systemd_service:
+    name: NetworkManager.service
+    enabled: true
+    state: started
+  when: hyprland_enable_networkmanager | bool
+
+- name: Habilita o bluetooth
+  become: true
+  ansible.builtin.systemd_service:
+    name: bluetooth.service
+    enabled: true
+  when: hyprland_enable_bluetooth | bool
+
+- name: Cria a pasta de screenshots (HYPRSHOT_DIR)
+  ansible.builtin.file:
+    path: "{{ home_dir }}/Pictures/Screenshots"
+    state: directory
+    mode: "0755"

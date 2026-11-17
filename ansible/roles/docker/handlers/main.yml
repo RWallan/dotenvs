@@ -1,0 +1,4 @@
+---
+- name: Avisa sobre o grupo docker
+  ansible.builtin.debug:
+    msg: Você entrou no grupo docker; faça logout/login para usar sem sudo.

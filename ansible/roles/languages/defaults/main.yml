@@ -1,0 +1,26 @@
+---
+languages_packages:
+  # Python: libs para o pyenv compilar as versões + pipx para as ferramentas
+  - python-pipx
+  - openssl
+  - zlib
+  - xz
+  - bzip2
+  - readline
+  - sqlite
+  - libffi
+  - tk
+  # Go: gopls/gofumpt/golangci-lint vêm do Mason
+  - go
+  # Node: Svelte e LSPs do Mason (ts_ls, svelte, eslint, prettierd...)
+  - nodejs
+  - npm
+
+# Instalados pelo pacman só se não houver instalação própria na home
+# (ex.: `curl ... | sh` do uv/rustup ou git clone do pyenv)
+languages_tools:
+  - { package: pyenv, path: "{{ home_dir }}/.pyenv/bin/pyenv" }
+  - { package: uv, path: "{{ home_dir }}/.local/bin/uv" }
+  - { package: rustup, path: "{{ home_dir }}/.cargo/bin/rustup" }
+
+languages_rust_components: [rust-analyzer, rustfmt, clippy, rust-src]

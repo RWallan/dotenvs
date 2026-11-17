@@ -1,0 +1,143 @@
+export LANG="${LANG:-en_US.UTF-8}"
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+# ---------------------------------------------------------------------------
+# PATH (sem duplicar entradas)
+# ---------------------------------------------------------------------------
+# Move/adiciona o diretório para o início (vale também para PATH herdado)
+path_prepend() {
+  [ -d "$1" ] || return 0
+  PATH=":$PATH:"
+  PATH="${PATH//":$1:"/:}"
+  PATH="${PATH#:}"
+  PATH="$1:${PATH%:}"
+}
+path_append() {
+  [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]] && PATH="$PATH:$1"
+  return 0
+}
+
+# Remove duplicatas e entradas vazias. No WSL remove também o PATH do Windows
+# (/mnt/c/...), que o WSL anexa inteiro: cada arquivo dali é lido pelo 9P e o
+# tab-completion de comandos (compgen -c) passava de 28 s. Os .exe usados são
+# expostos via symlinks (ver "WSL: integração com o Windows").
+_path=""
+IFS=: read -ra _dirs <<< "$PATH"
+for _d in "${_dirs[@]}"; do
+  [[ -z "$_d" || ":$_path:" == *":$_d:"* ]] && continue
+  [[ -n "$WSL_DISTRO_NAME" && "$_d" == /mnt/* ]] && continue
+  _path+="${_path:+:}$_d"
+done
+PATH="$_path"
+unset _path _dirs _d
+
+export PYENV_ROOT="$HOME/.pyenv"
+path_prepend "$PYENV_ROOT/bin"
+path_prepend "$HOME/go/bin"
+path_prepend "$HOME/.cargo/bin"
+path_prepend "$HOME/.local/bin"     # claude, agy, uv, pipx (poetry, posting, harlequin)
+
+# Google Cloud SDK: tarball (~/Downloads, ~/) ou pacote do AUR (/opt)
+for _d in "$HOME/Downloads/google-cloud-sdk" "$HOME/google-cloud-sdk" /opt/google-cloud-cli; do
+  if [ -d "$_d/bin" ]; then
+    export GCLOUD_SDK_DIR="$_d"
+    path_append "$_d/bin"
+    break
+  fi
+done
+unset _d
+
+# ---------------------------------------------------------------------------
+# WSL: integração com o Windows
+# ---------------------------------------------------------------------------
+if [ -n "$WSL_DISTRO_NAME" ]; then
+  # Pasta do usuário no Windows (descoberta uma vez e guardada em cache)
+  _cache="${XDG_CACHE_HOME:-$HOME/.cache}/wsl-winhome"
+  if [ -z "${WIN_HOME:-}" ]; then
+    if [ -s "$_cache" ]; then
+      read -r WIN_HOME < "$_cache"
+    elif [ -x /mnt/c/Windows/System32/cmd.exe ]; then
+      WIN_HOME="$(cd /mnt/c && ./Windows/System32/cmd.exe /d /c 'echo %USERPROFILE%' 2> /dev/null | tr -d '\r')"
+      if [ -n "$WIN_HOME" ]; then
+        WIN_HOME="$(wslpath -u "$WIN_HOME")"
+        mkdir -p "${_cache%/*}" && printf '%s\n' "$WIN_HOME" > "$_cache"
+      fi
+    fi
+  fi
+  export WIN_HOME
+  unset _cache
+
+  # Executáveis do Windows disponíveis no shell, via symlinks numa pasta local.
+  # Para adicionar outro: inclua na lista e rode `rm -rf ~/.local/share/wsl-winbin`.
+  WSL_WINBIN="$HOME/.local/share/wsl-winbin"
+  if [ ! -d "$WSL_WINBIN" ]; then
+    mkdir -p "$WSL_WINBIN"
+    for _exe in \
+      /mnt/c/Windows/explorer.exe \
+      /mnt/c/Windows/System32/cmd.exe \
+      /mnt/c/Windows/System32/clip.exe \
+      /mnt/c/Windows/System32/wsl.exe \
+      /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe \
+      "/mnt/c/Program Files/PowerShell/7/pwsh.exe" \
+      "$WIN_HOME/AppData/Local/Microsoft/WindowsApps/winget.exe" \
+      "$WIN_HOME/AppData/Local/Microsoft/WindowsApps/wt.exe" \
+      "$WIN_HOME/AppData/Local/Programs/Microsoft VS Code/bin/code" \
+      "/mnt/c/Program Files/Microsoft VS Code/bin/code"; do
+      [ -e "$_exe" ] && ln -sf "$_exe" "$WSL_WINBIN/${_exe##*/}"
+    done
+    unset _exe
+  fi
+  path_append "$WSL_WINBIN"
+
+  # Abre links (login do claude, gh, gcloud) no navegador do Windows
+  command -v wslview > /dev/null && export BROWSER="wslview"
+fi
+export PATH
+
+# ---------------------------------------------------------------------------
+# Histórico: grande, sem duplicatas e compartilhado entre painéis do tmux
+# ---------------------------------------------------------------------------
+HISTSIZE=50000
+HISTFILESIZE=100000
+HISTCONTROL=ignoreboth:erasedups
+HISTIGNORE="clear:ls:exit:history"
+# `history -a` (gravar a cada comando) é adicionado ao PROMPT_COMMAND no fim do
+# ~/.bashrc, depois do prompt (Starship), que mexe no PROMPT_COMMAND.
+
+# ---------------------------------------------------------------------------
+# Ferramentas
+# ---------------------------------------------------------------------------
+# fzf (integrado em .bashrc.evals):
+#   Ctrl-R histórico | Ctrl-T arquivos | Alt-C entra em diretório | <cmd> **<Tab> completa
+#   Ctrl-/ mostra/esconde o preview. Dentro do tmux abre como popup.
+# Busca com fd: rápido, respeita .gitignore e inclui arquivos ocultos (menos .git).
+if command -v fd > /dev/null; then
+  export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
+fi
+export FZF_DEFAULT_OPTS=" \
+--tmux=85% --height=50% --layout=reverse --info=inline --bind=ctrl-/:toggle-preview \
+--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+--color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
+export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --color=always --icons=always {} | head -200'"
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window=up:3:hidden:wrap"
+
+# bat: tema e man pages coloridas (man <cmd> passa pelo bat)
+export BAT_THEME="Catppuccin Mocha"
+if command -v bat > /dev/null; then
+  export MANPAGER="sh -c 'col -bx | bat --language=man --plain'"
+  export MANROFFOPT="-c"
+fi
+
+# ripgrep: smart-case, arquivos ocultos (menos .git) — vale para rg, Neovim e fzf
+export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/config"
+
+# less (git, journalctl...): cores, sai se couber numa tela, busca sem diferenciar caixa
+export LESS="-RFi"
+
+# Prompt simples (substituído pelo Starship em .bashrc.evals, se instalado)
+PS1="\u@\h \[\e[32m\]\w \[\e[91m\]\$(parse_git_branch)\[\e[00m\]$ "

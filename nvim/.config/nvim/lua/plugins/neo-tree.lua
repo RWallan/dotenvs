@@ -3,23 +3,20 @@ return {
 	version = "*",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
-		"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+		"nvim-tree/nvim-web-devicons",
 		"MunifTanjim/nui.nvim",
 	},
 	cmd = "Neotree",
 	keys = {
-		{ "<leader>ee", ":Neotree toggle<CR>", desc = "Toogle file explorer", silent = true },
+		{ "<leader>ee", "<cmd>Neotree toggle<CR>", desc = "Toggle file explorer" },
 	},
-	config = function()
-		local neotree = require("neo-tree")
-		neotree.setup({
-			window = {
-				width = 27,
-				mappings = {
-					["[b"] = "prev_source",
-					["]b"] = "next_source",
-				},
+	opts = {
+		window = {
+			width = 27,
+			mappings = {
+				["[b"] = "prev_source",
+				["]b"] = "next_source",
 			},
-		})
-	end,
+		},
+	},
 }

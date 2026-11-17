@@ -1,6 +1,7 @@
 return {
 	"goolord/alpha-nvim",
 	event = "VimEnter",
+	cmd = "Alpha",
 	config = function()
 		local alpha = require("alpha")
 		local dashboard = require("alpha.themes.dashboard")
@@ -46,16 +47,19 @@ return {
 		}
 
 		alpha.setup(dashboard.opts)
-		vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
-		vim.api.nvim_create_augroup("alpha_on_empty", { clear = true })
-		vim.api.nvim_create_autocmd("User", {
-			pattern = "BDeletePre *",
-			group = "alpha_on_empty",
-			callback = function()
-				local bufnr = vim.api.nvim_get_current_buf()
-				local name = vim.api.nvim_buf_get_name(bufnr)
 
-				if name == "" then
+		local group = vim.api.nvim_create_augroup("user-alpha", { clear = true })
+		vim.api.nvim_create_autocmd("FileType", {
+			group = group,
+			pattern = "alpha",
+			command = "setlocal nofoldenable",
+		})
+		-- Volta para o dashboard ao fechar o último buffer (evento do bufdelete.nvim)
+		vim.api.nvim_create_autocmd("User", {
+			group = group,
+			pattern = "BDeletePre *",
+			callback = function()
+				if vim.api.nvim_buf_get_name(0) == "" then
 					vim.cmd([[:Alpha | bd#]])
 				end
 			end,

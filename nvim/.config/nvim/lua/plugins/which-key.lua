@@ -1,10 +1,10 @@
 return {
 	"folke/which-key.nvim",
-	event = "VimEnter",
-	config = function()
-		local wk = require("which-key")
-		wk.add({
+	event = "VeryLazy",
+	opts = {
+		spec = {
 			{ "<leader>b", group = "Buffer" },
+			{ "<leader>c", group = "Claude Code" },
 			{ "<leader>e", group = "Explorer" },
 			{ "<leader>f", group = "Find" },
 			{ "<leader>g", group = "Git" },
@@ -13,6 +13,6 @@ return {
 			{ "<leader>r", group = "Resize" },
 			{ "<leader>s", group = "Split" },
 			{ "<leader>w", group = "Workspace" },
-		})
-	end,
+		},
+	},
 }

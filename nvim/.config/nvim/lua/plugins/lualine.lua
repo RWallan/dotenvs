@@ -1,14 +1,32 @@
 return {
-	{
-		"nvim-lualine/lualine.nvim",
-
-		opts = function(_, opts)
-			opts.sections = opts.sections or {}
-			opts.sections.lualine_z = opts.sections.lualine_z or {}
-
-			table.insert(opts.sections.lualine_z, {
-				require("opencode").statusline,
-			})
-		end,
-	},
+	"nvim-lualine/lualine.nvim",
+	event = "VeryLazy",
+	dependencies = "nvim-tree/nvim-web-devicons",
+	init = function()
+		-- Evita a statusline "piscar" vazia até o lualine carregar
+		vim.g.lualine_laststatus = vim.o.laststatus
+		if vim.fn.argc(-1) > 0 then
+			vim.o.statusline = " "
+		else
+			vim.o.laststatus = 0
+		end
+	end,
+	opts = function()
+		vim.o.laststatus = vim.g.lualine_laststatus
+		return {
+			sections = {
+				lualine_z = {
+					{
+						-- Status do OpenCode, sem forçar o carregamento do plugin
+						function()
+							if not package.loaded.opencode then
+								return ""
+							end
+							return require("opencode").statusline()
+						end,
+					},
+				},
+			},
+		}
+	end,
 }

@@ -1,15 +1,17 @@
 return {
 	"rmagatti/auto-session",
-	config = function()
-		local auto_session = require("auto-session")
-
-		auto_session.setup({
-			auto_restore_enabled = false,
-			auto_session_suppress_dirs = { "~/", "~/Dev/", "~/Downloads", "~/Documents", "~/Desktop/" },
-		})
-
-		local keymap = vim.keymap
-
-		keymap.set("n", "<leader>wr", "<cmd>AutoSession restore<CR>", { desc = "Restore session for cwd" }) -- restore last workspace session for current directory
-	end,
+	-- Carregado após a UI para continuar salvando a sessão ao sair
+	event = "VeryLazy",
+	cmd = { "AutoSession" },
+	keys = {
+		{ "<leader>wr", "<cmd>AutoSession restore<CR>", desc = "Restore session for cwd" },
+	},
+	opts = {
+		auto_restore = false,
+		suppressed_dirs = { "~/", "~/Dev/", "~/Downloads", "~/Documents", "~/Desktop/" },
+		session_lens = {
+			-- Não carrega o telescope no startup
+			load_on_setup = false,
+		},
+	},
 }

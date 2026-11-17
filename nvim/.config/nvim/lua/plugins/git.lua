@@ -1,5 +1,6 @@
 return {
-	{"lewis6991/gitsigns.nvim",
+	{
+		"lewis6991/gitsigns.nvim",
 		event = { "BufReadPre", "BufNewFile" },
 		opts = {
 			signs = {
@@ -10,30 +11,32 @@ return {
 				changedelete = { text = "~" },
 			},
 			on_attach = function(bufnr)
-				local gs = package.loaded.gitsigns
+				local gs = require("gitsigns")
 
 				local function map(mode, l, r, desc)
 					vim.keymap.set(mode, l, r, { buffer = bufnr, desc = desc })
 				end
 
 				-- Navigation
-				map("n", "]g", gs.next_hunk, "Next Hunk")
-				map("n", "[g", gs.prev_hunk, "Prev Hunk")
+				map("n", "]g", function()
+					gs.nav_hunk("next")
+				end, "Next Hunk")
+				map("n", "[g", function()
+					gs.nav_hunk("prev")
+				end, "Prev Hunk")
 
-				-- Actions
-				map("n", "<leader>gs", gs.stage_hunk, "Stage hunk")
+				-- Actions (stage_hunk em um hunk já staged desfaz o stage)
+				map("n", "<leader>gs", gs.stage_hunk, "Stage/unstage hunk")
 				map("n", "<leader>gr", gs.reset_hunk, "Reset hunk")
 				map("v", "<leader>gs", function()
 					gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-				end, "Stage hunk")
+				end, "Stage/unstage hunk")
 				map("v", "<leader>gr", function()
 					gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
 				end, "Reset hunk")
 
 				map("n", "<leader>gS", gs.stage_buffer, "Stage buffer")
 				map("n", "<leader>gR", gs.reset_buffer, "Reset buffer")
-
-				map("n", "<leader>gu", gs.undo_stage_hunk, "Undo stage hunk")
 
 				map("n", "<leader>gp", gs.preview_hunk, "Preview hunk")
 
@@ -48,7 +51,7 @@ return {
 				end, "Diff this ~")
 
 				-- Text object
-				map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Gitsigns select hunk")
+				map({ "o", "x" }, "ih", gs.select_hunk, "Gitsigns select hunk")
 			end,
 		},
 	},
@@ -61,12 +64,9 @@ return {
 			"LazyGitFilter",
 			"LazyGitFilterCurrentFile",
 		},
-		-- optional for floating window border decoration
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 		},
-		-- setting the keybinding for LazyGit with 'keys' is recommended in
-		-- order to load the plugin when the command is run for the first time
 		keys = {
 			{ "<leader>gg", "<cmd>LazyGit<cr>", desc = "Open lazy git" },
 		},

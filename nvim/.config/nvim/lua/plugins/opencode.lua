@@ -1,43 +1,56 @@
 return {
-	{
-		"nickjvandyke/opencode.nvim",
-
-		version = "*",
-
-		config = function()
-			vim.g.opencode_opts = {}
-
-			local opencode = require("opencode")
-
-			vim.keymap.set({ "n", "x" }, "<C-a>", function()
-				opencode.ask("")
-			end, { desc = "Ask OpenCode…" })
-
-			vim.keymap.set({ "n", "x" }, "<C-x>", function()
-				opencode.select()
-			end, { desc = "Select OpenCode…" })
-
-			vim.keymap.set({ "n", "x" }, "go", function()
-				return opencode.operator("@this ")
-			end, {
-				desc = "Append range to OpenCode",
-				expr = true,
-			})
-
-			vim.keymap.set({ "n" }, "goo", function()
-				return opencode.operator("@this ") .. "_"
-			end, {
-				desc = "Append line to OpenCode",
-				expr = true,
-			})
-
-			vim.keymap.set({ "n" }, "<S-C-u>", function()
-				opencode.command("session.half.page.up")
-			end, { desc = "Scroll OpenCode up" })
-
-			vim.keymap.set({ "n" }, "<S-C-d>", function()
-				opencode.command("session.half.page.down")
-			end, { desc = "Scroll OpenCode down" })
-		end,
+	"nickjvandyke/opencode.nvim",
+	version = "*",
+	init = function()
+		vim.g.opencode_opts = {}
+	end,
+	keys = {
+		{
+			"<C-a>",
+			function()
+				require("opencode").ask("")
+			end,
+			mode = { "n", "x" },
+			desc = "Ask OpenCode…",
+		},
+		{
+			"<C-x>",
+			function()
+				require("opencode").select()
+			end,
+			mode = { "n", "x" },
+			desc = "Select OpenCode…",
+		},
+		{
+			"go",
+			function()
+				return require("opencode").operator("@this ")
+			end,
+			mode = { "n", "x" },
+			expr = true,
+			desc = "Append range to OpenCode",
+		},
+		{
+			"goo",
+			function()
+				return require("opencode").operator("@this ") .. "_"
+			end,
+			expr = true,
+			desc = "Append line to OpenCode",
+		},
+		{
+			"<S-C-u>",
+			function()
+				require("opencode").command("session.half.page.up")
+			end,
+			desc = "Scroll OpenCode up",
+		},
+		{
+			"<S-C-d>",
+			function()
+				require("opencode").command("session.half.page.down")
+			end,
+			desc = "Scroll OpenCode down",
+		},
 	},
 }

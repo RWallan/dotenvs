@@ -2,6 +2,7 @@ return {
 	{
 		"saghen/blink.cmp",
 		version = "2.*",
+		event = { "InsertEnter", "CmdlineEnter" },
 
 		dependencies = {
 			"saghen/blink.lib",

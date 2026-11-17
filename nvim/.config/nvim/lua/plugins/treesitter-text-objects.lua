@@ -2,6 +2,7 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		branch = "main",
+		event = "VeryLazy",
 
 		config = function()
 			local textobjects = require("nvim-treesitter-textobjects")
@@ -21,10 +22,6 @@ return {
 
 				move = {
 					set_jumps = true,
-				},
-
-				lsp_interop = {
-					enable = true,
 				},
 			})
 

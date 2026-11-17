@@ -38,21 +38,17 @@
     python: /usr/bin/python
   loop: "{{ pipx_tools }}"
 
-- name: Lê a configuração do poetry
-  ansible.builtin.command: poetry config {{ item }}
-  loop: [virtualenvs.in-project, virtualenvs.prompt]
-  register: languages_poetry_config
+# .venv dentro do projeto: o `pshell`/`activate` do bash encontra o ambiente
+- name: Lê a configuração do poetry (virtualenvs.in-project)
+  ansible.builtin.command: poetry config virtualenvs.in-project
+  register: languages_poetry_in_project
   changed_when: false
   check_mode: false
   when: "'poetry' in pipx_tools"
 
-# .venv dentro do projeto: o `pshell`/`activate` do bash encontra o ambiente
-- name: Configura o poetry (.venv no projeto)
-  ansible.builtin.command: poetry config {{ item.key }} {{ item.value }}
-  loop:
-    - { key: virtualenvs.in-project, value: "true" }
-    - { key: virtualenvs.prompt, value: "{project_name}" }
+- name: Configura o poetry para criar o .venv no projeto
+  ansible.builtin.command: poetry config virtualenvs.in-project true
   when:
     - "'poetry' in pipx_tools"
-    - (languages_poetry_config.results | selectattr('item', 'equalto', item.key) | first).stdout | default('') != item.value
+    - languages_poetry_in_project.stdout | default('') != 'true'
   changed_when: true

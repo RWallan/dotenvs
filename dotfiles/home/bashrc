@@ -5,8 +5,12 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# Abre o tmux automaticamente (exceto dentro do tmux, do Neovim e do VS Code)
-if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -z "$NVIM" ] \
+# Há um terminal de verdade? Programas que só leem o ambiente rodando `bash -ic`
+# sem TTY (VS Code Remote-WSL, Claude Code...) não podem cair no tmux nem no fastfetch.
+[[ -t 0 && -t 1 ]] && _has_tty=1 || _has_tty=""
+
+# Abre o tmux automaticamente (exceto sem TTY, dentro do tmux, do Neovim e do VS Code)
+if [ -n "$_has_tty" ] && command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -z "$NVIM" ] \
   && [[ ! "$TERM" =~ screen|tmux ]] && [ "$TERM_PROGRAM" != "vscode" ]; then
   exec tmux
 fi
@@ -26,6 +30,7 @@ unset file
 [[ "$PROMPT_COMMAND" == *"history -a"* ]] || PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }history -a"
 
 # fastfetch só no primeiro painel do tmux (ou fora dele), não em cada split
-if command -v fastfetch &> /dev/null && [[ -z "$TMUX" || "$TMUX_PANE" == "%0" ]]; then
+if [ -n "$_has_tty" ] && command -v fastfetch &> /dev/null && [[ -z "$TMUX" || "$TMUX_PANE" == "%0" ]]; then
   fastfetch
 fi
+unset _has_tty

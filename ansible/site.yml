@@ -39,9 +39,10 @@
         PYENV_ROOT: "{{ home_dir }}/.pyenv"
     - role: cli
       tags: [cli]
+    # No WSL o docker vem do Docker Desktop (integração com o Windows): nunca instala o nativo
     - role: docker
       tags: [docker]
-      when: install_docker
+      when: install_docker | bool and not (is_wsl | bool)
     - role: cloud
       tags: [cloud]
       when: install_cloud

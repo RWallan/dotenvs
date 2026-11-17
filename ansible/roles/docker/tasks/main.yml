@@ -1,35 +1,22 @@
 ---
-# No WSL com Docker Desktop, o `docker` vem da integração do Windows (não do pacman)
-- name: Procura um docker fora do pacman (Docker Desktop)
-  ansible.builtin.stat:
-    path: /usr/bin/docker
-  register: docker_cli
+- name: Instala o docker
+  become: true
+  community.general.pacman:
+    name: "{{ docker_packages }}"
+    state: present
 
-- name: Decide se instala o docker nativo
-  ansible.builtin.set_fact:
-    docker_desktop: "{{ docker_cli.stat.exists and 'docker' not in ansible_facts.packages }}"
+- name: Habilita o serviço
+  become: true
+  ansible.builtin.systemd_service:
+    name: docker.service
+    enabled: true
+    state: started
+  when: ansible_facts.service_mgr == "systemd"
 
-- name: Docker nativo
-  when: not docker_desktop
-  block:
-    - name: Instala o docker
-      become: true
-      community.general.pacman:
-        name: "{{ docker_packages }}"
-        state: present
-
-    - name: Habilita o serviço
-      become: true
-      ansible.builtin.systemd_service:
-        name: docker.service
-        enabled: true
-        state: started
-      when: ansible_facts.service_mgr == "systemd"
-
-    - name: Adiciona o usuário ao grupo docker
-      become: true
-      ansible.builtin.user:
-        name: "{{ username }}"
-        groups: docker
-        append: true
-      notify: Avisa sobre o grupo docker
+- name: Adiciona o usuário ao grupo docker
+  become: true
+  ansible.builtin.user:
+    name: "{{ username }}"
+    groups: docker
+    append: true
+  notify: Avisa sobre o grupo docker

@@ -23,7 +23,7 @@ y() {
   [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
   rm -f -- "$tmp"
 }
-command -v yazi &> /dev/null && bind '"\ey": "\C-e\C-u y\C-m"'
+[[ -t 0 ]] && command -v yazi &> /dev/null && bind '"\ey": "\C-e\C-u y\C-m"'
 
 # Ativa o .venv mais próximo (diretório atual ou acima). Serve para uv e poetry
 # (o Ansible configura o poetry com virtualenvs.in-project = true).

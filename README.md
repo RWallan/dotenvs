@@ -60,7 +60,7 @@ Depois inclua a chave criada no perfil certo do `config.yaml`.
 | `wsl` | `wslu` (abrir links no Windows), `win32yank` (clipboard), `/etc/wsl.conf` |
 | `languages` | pyenv + versões do Python, pipx (poetry, posting, harlequin), Rust, Go, Node |
 | `cli` | tmux, starship, eza, bat, fzf, fd, ripgrep, zoxide, lazygit, gh, terraform, yazi (previews leves)... |
-| `docker` | Docker nativo; **pulado sozinho** se o Docker Desktop (WSL) já fornece o `docker` |
+| `docker` | Docker nativo, só no Arch nativo (no WSL o `docker` vem do Docker Desktop) |
 | `cloud` | aws-cli, azure-cli, google-cloud-cli (desligado por padrão) |
 | `hyprland` (`desktop`) | Hyprland e o equivalente de cada peça do i3 (ver abaixo); previews pesados do yazi |
 | `dotfiles` | dotdrop: backup do que conflitar, instalação do perfil, `~/.bashrc.local`; remove o oh-my-posh antigo |

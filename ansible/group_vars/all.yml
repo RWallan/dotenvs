@@ -17,7 +17,7 @@ desktop: hyprland
 # pacman -Syu a cada execução
 system_upgrade: true
 
-# Docker nativo. É pulado sozinho quando o Docker Desktop (WSL) já fornece o `docker`.
+# Docker nativo (só no Arch nativo; no WSL o docker vem do Docker Desktop)
 install_docker: true
 
 # aws-cli, azure-cli e google-cloud-cli

@@ -25,6 +25,19 @@
       ansible.builtin.package_facts:
       tags: [always]
 
+    - name: Procura o usuário que compila pacotes do AUR
+      ansible.builtin.getent:
+        database: passwd
+        key: "{{ aur_builder }}"
+        fail_key: false
+      tags: [always]
+
+    # No --check o aur_builder ainda não foi criado de verdade: as tasks do AUR são puladas
+    - name: Decide se as tasks do AUR podem rodar
+      ansible.builtin.set_fact:
+        aur_ready: "{{ not ansible_check_mode or ansible_facts.getent_passwd[aur_builder] is not none }}"
+      tags: [always]
+
   roles:
     - role: base
       tags: [base]
@@ -45,7 +58,7 @@
       when: install_docker | bool and not (is_wsl | bool)
     - role: cloud
       tags: [cloud]
-      when: install_cloud
+      when: install_cloud | bool
     - role: hyprland
       tags: [desktop, hyprland]
       when: not (is_wsl | bool) and desktop == "hyprland"

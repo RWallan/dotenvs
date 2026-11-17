@@ -12,7 +12,9 @@
     name: "{{ hyprland_aur_packages }}"
     use: yay
     state: present
-  when: hyprland_aur_packages | length > 0
+  when:
+    - aur_ready | bool
+    - hyprland_aur_packages | length > 0
 
 - name: Habilita o NetworkManager
   become: true
@@ -20,6 +22,7 @@
     name: NetworkManager.service
     enabled: true
     state: started
+  ignore_errors: "{{ ansible_check_mode }}" # no --check o serviço pode ainda não existir
   when: hyprland_enable_networkmanager | bool
 
 - name: Habilita o bluetooth
@@ -27,6 +30,7 @@
   ansible.builtin.systemd_service:
     name: bluetooth.service
     enabled: true
+  ignore_errors: "{{ ansible_check_mode }}" # no --check o serviço pode ainda não existir
   when: hyprland_enable_bluetooth | bool
 
 - name: Cria a pasta de screenshots (HYPRSHOT_DIR)

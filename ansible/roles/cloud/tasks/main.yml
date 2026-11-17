@@ -18,4 +18,6 @@
     name: google-cloud-cli
     use: yay
     state: present
-  when: not cloud_gcloud_tarball.stat.exists
+  when:
+    - aur_ready | bool
+    - not cloud_gcloud_tarball.stat.exists

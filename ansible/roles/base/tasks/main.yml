@@ -1,11 +1,18 @@
 ---
-- name: Atualiza o sistema e instala o básico
+# O módulo pacman não aceita `name` e `upgrade` na mesma task
+- name: Atualiza o sistema (pacman -Syu)
+  become: true
+  community.general.pacman:
+    update_cache: true
+    upgrade: true
+  when: system_upgrade | bool
+
+- name: Instala o básico
   become: true
   community.general.pacman:
     name: "{{ base_packages }}"
     state: present
-    update_cache: true
-    upgrade: "{{ system_upgrade | bool }}"
+    update_cache: "{{ not (system_upgrade | bool) }}"
 
 # Padrão recomendado pela coleção kewlfft.aur: o makepkg não pode rodar como root,
 # então um usuário dedicado (sem senha) compila e só ele chama `sudo pacman` sem senha.
@@ -32,4 +39,6 @@
     name: yay-bin
     use: makepkg
     state: present
-  when: "'yay' not in ansible_facts.packages and 'yay-bin' not in ansible_facts.packages"
+  when:
+    - aur_ready | bool
+    - "'yay' not in ansible_facts.packages and 'yay-bin' not in ansible_facts.packages"

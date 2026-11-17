@@ -11,6 +11,7 @@
     name: docker.service
     enabled: true
     state: started
+  ignore_errors: "{{ ansible_check_mode }}" # no --check o serviço pode ainda não existir
   when: ansible_facts.service_mgr == "systemd"
 
 - name: Adiciona o usuário ao grupo docker

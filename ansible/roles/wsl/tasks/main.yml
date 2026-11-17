@@ -6,6 +6,7 @@
     name: "{{ wsl_aur_packages }}"
     use: yay
     state: present
+  when: aur_ready | bool
 
 - name: Configura o /etc/wsl.conf (systemd e usuário padrão)
   become: true
@@ -14,6 +15,7 @@
     section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
+    no_extra_spaces: true # mantém o formato `chave=valor` do wsl.conf
     mode: "0644"
   loop:
     - { section: boot, option: systemd, value: "true" }

@@ -7,6 +7,7 @@
     use: yay
     state: present
   tags: [packages]
+  when: aur_ready | bool
 
 - name: Lista os dotfiles do perfil {{ dotfiles_profile }}
   ansible.builtin.command: >-
@@ -17,6 +18,8 @@
   register: dotfiles_list
   changed_when: false
   check_mode: false
+  # No --check o dotdrop pode ainda não estar instalado (a instalação é simulada)
+  failed_when: dotfiles_list.rc != 0 and not ansible_check_mode
 
 # Com -f o dotdrop apaga o que existir no destino (inclusive diretórios) sem backup
 - name: Move conflitos para {{ dotfiles_backup_dir }}
@@ -69,6 +72,8 @@
   ansible.builtin.blockinfile:
     path: "{{ home_dir }}/.bashrc.local"
     marker: "# {mark} dotdrop (gerenciado pelo Ansible)"
+    create: true
+    mode: "0600"
     block: |
       export DOTDROP_CONFIG="{{ dotfiles_config }}"
       export DOTDROP_PROFILE="{{ dotfiles_profile }}"

@@ -27,7 +27,21 @@ return {
 	---@type snacks.Config
 	opts = {
 		input = { enabled = true },
-		picker = { enabled = true },
+		picker = {
+			enabled = true,
+			sources = {
+				explorer = {
+					hidden = true, -- mostra dotfiles (.env, .gitignore...)
+					ignored = true, -- mostra arquivos listados no .gitignore
+					layout = {
+						layout = {
+							width = 25,
+							min_width = 25,
+						},
+					},
+				},
+			},
+		},
 		explorer = { enabled = true, replace_netrw = true },
 		lazygit = { enabled = true },
 		indent = {
@@ -66,12 +80,12 @@ return {
 ⠀⠹⡀⠈⢦⠳⡀⠀⠀⠀⢠⣤⠀⢈⠆⡤⣄⠀⠞⣠⠚⡡⠒⠉⠀⠀⠀⠀⠀⠀⠀⣠⠖⠉⠀⠀⠀⠉⠉⠙⠳⢦⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠙⢄⠀⠣⠙⠄⠀⢠⢏⡝⠀⠜⡀⠙⠁⡠⠚⣡⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
 				keys = {
-					{ icon = " ", key = "e", desc = "New File", action = ":ene | startinsert" },
-					{ icon = " ", key = "x", desc = "File Explorer", action = ":lua Snacks.explorer()" },
+					{ icon = " ", key = "e", desc = "New File", action = ":ene | startinsert" },
+					{ icon = " ", key = "x", desc = "File Explorer", action = ":lua Snacks.explorer()" },
 					{ icon = "󰈲 ", key = "f", desc = "Find File", action = ":lua Snacks.picker.files()" },
-					{ icon = " ", key = "g", desc = "Find Word", action = ":lua Snacks.picker.grep()" },
+					{ icon = " ", key = "g", desc = "Find Word", action = ":lua Snacks.picker.grep()" },
 					{ icon = "󰁯 ", key = "s", desc = "Restore Session", action = ":AutoSession restore" },
-					{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
+					{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
 				},
 			},
 			sections = {
@@ -105,10 +119,22 @@ return {
 		{ "/", pick("lines"), desc = "[/] Fuzzily search in current buffer" },
 
 		-- Explorador (antes: neo-tree)
-		{ "<leader>ee", function() Snacks.explorer() end, desc = "Toggle file explorer" },
+		{
+			"<leader>ee",
+			function()
+				Snacks.explorer()
+			end,
+			desc = "Toggle file explorer",
+		},
 
 		-- Git (antes: lazygit.nvim)
-		{ "<leader>gg", function() Snacks.lazygit() end, desc = "Open lazy git" },
+		{
+			"<leader>gg",
+			function()
+				Snacks.lazygit()
+			end,
+			desc = "Open lazy git",
+		},
 
 		-- Buffers (antes: bufdelete + bufferline). [b e ]b são nativos do Neovim 0.11+
 		{

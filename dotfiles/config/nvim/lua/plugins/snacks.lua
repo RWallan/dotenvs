@@ -33,6 +33,16 @@ return {
 				explorer = {
 					hidden = true, -- mostra dotfiles (.env, .gitignore...)
 					ignored = true, -- mostra arquivos listados no .gitignore
+					exclude = { -- ...mas esconde lixo gerado
+						"__pycache__",
+						"*.pyc",
+						".pytest_cache",
+						".mypy_cache",
+						".ruff_cache",
+						".venv",
+						"node_modules",
+						".git",
+					},
 					layout = {
 						layout = {
 							width = 25,

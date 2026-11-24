@@ -8,7 +8,8 @@ return {
 		-- Integrações explícitas: evita varrer todos os plugins do lazy a cada startup
 		auto_integrations = false,
 		integrations = {
-			blink_cmp = { style = "bordered" },
+			bufferline = true,
+			blink_cmp ={ style = "bordered" },
 			fidget = true,
 			gitsigns = true,
 			mason = true,

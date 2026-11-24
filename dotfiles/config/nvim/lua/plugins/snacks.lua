@@ -8,6 +8,24 @@ local function pick(source, opts)
 	end
 end
 
+-- Abre o dashboard no split focado (como o :Alpha), sem cobrir a tela toda.
+-- Os buffers anteriores continuam listados e acessíveis pelo bufferline.
+local function open_dashboard()
+	local win = vim.api.nvim_get_current_win()
+	local buf = vim.api.nvim_create_buf(false, true)
+	vim.api.nvim_win_set_buf(win, buf)
+	vim.bo[buf].bufhidden = "wipe"
+	vim.bo[buf].buflisted = false
+	vim.bo[buf].filetype = "snacks_dashboard"
+	for _, o in ipairs({ "number", "relativenumber", "cursorline", "list", "spell", "wrap" }) do
+		vim.wo[win][o] = false
+	end
+	vim.wo[win].signcolumn = "no"
+	vim.wo[win].statuscolumn = ""
+	vim.wo[win].winhighlight = "Normal:SnacksDashboardNormal,NormalFloat:SnacksDashboardNormal"
+	Snacks.dashboard({ buf = buf, win = win })
+end
+
 -- Se só restou o buffer vazio [No Name], volta para o dashboard
 local function dashboard_if_empty()
 	vim.schedule(function()
@@ -16,7 +34,7 @@ local function dashboard_if_empty()
 				return
 			end
 		end
-		Snacks.dashboard()
+		open_dashboard()
 	end)
 end
 
@@ -147,6 +165,11 @@ return {
 		},
 
 		-- Buffers (antes: bufdelete + bufferline). [b e ]b são nativos do Neovim 0.11+
+		{
+			"<leader>bd",
+			open_dashboard,
+			desc = "Open dashboard",
+		},
 		{
 			"<leader>bc",
 			function()

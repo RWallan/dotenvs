@@ -59,7 +59,7 @@ Depois inclua a chave criada no perfil certo do `config.yaml`.
 | --- | --- |
 | `base` | `pacman -Syu`, pacotes básicos, usuário `aur_builder` e `yay` |
 | `wsl` | `wslu` (abrir links no Windows), `win32yank` (clipboard), `/etc/wsl.conf` |
-| `languages` | pyenv + versões do Python, pipx (poetry, posting, harlequin), Rust, Go, Node |
+| `languages` | pyenv + versões do Python, uv, pipx (posting, harlequin), Rust, Go, Node |
 | `cli` | tmux, starship, eza, bat, fzf, fd, ripgrep, zoxide, lazygit, gh, terraform, yazi (previews leves)... |
 | `docker` | Arch nativo: instala o Docker. WSL: verifica o Docker Desktop. Falhas viram **aviso** e o playbook segue |
 | `cloud` | aws-cli, azure-cli, google-cloud-cli (desligado por padrão) |

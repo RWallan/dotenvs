@@ -8,7 +8,7 @@ alias ip="ip -color=auto"
 alias lg="lazygit"
 alias lzd="lazydocker"
 
-# Python: ativa o .venv do projeto (uv e poetry com virtualenvs.in-project) — ver activate()
+# Python: ativa o .venv do projeto (uv) — ver activate()
 alias pshell="activate"
 alias d="deactivate"
 

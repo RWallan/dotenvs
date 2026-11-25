@@ -25,9 +25,7 @@ y() {
 }
 [[ -t 0 ]] && command -v yazi &> /dev/null && bind '"\ey": "\C-e\C-u y\C-m"'
 
-# Ativa o .venv mais próximo (diretório atual ou acima). Serve para uv e poetry
-# (o Ansible configura o poetry com virtualenvs.in-project = true).
-# O Poetry 2.x não tem mais `poetry shell`.
+# Ativa o .venv mais próximo (diretório atual ou acima), criado pelo `uv sync`.
 activate() {
   local dir="$PWD"
   while :; do
@@ -38,7 +36,7 @@ activate() {
     [ -z "$dir" ] && break
     dir="${dir%/*}"
   done
-  echo "Nenhum .venv encontrado (rode 'uv sync' ou 'poetry install')." >&2
+  echo "Nenhum .venv encontrado (rode 'uv sync')." >&2
   return 1
 }
 

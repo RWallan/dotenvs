@@ -25,7 +25,7 @@ install_cloud: false
 
 # Python: a primeira versão vira a global (se ainda não houver uma)
 python_versions: ["3.14", "3.13", "3.12"]
-pipx_tools: [poetry, posting, harlequin]
+pipx_tools: [posting, harlequin]
 
 # Usuário sem senha (só pode rodar pacman via sudo) usado para compilar pacotes do AUR
 aur_builder: aur_builder
